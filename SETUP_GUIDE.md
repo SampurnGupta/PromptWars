@@ -157,3 +157,4 @@ Lint removal in ChoreCraft utilizes a **two-tier repair pipeline**:
    - Tested live via `/api/lint/analyze` and `/api/lint/fix`.
    - Automated unit test: `npm test` checks that `var count = 0; if (count == 0) console.log(count);` is automatically repaired to `const count = 0; if (count === 0)`.
    - Result: **100% Functional & Verified**.
+

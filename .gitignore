@@ -34,3 +34,7 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
+# Google Service Account keys & credentials
+promptwars-*.json
+service-account*.json
+*.key.json

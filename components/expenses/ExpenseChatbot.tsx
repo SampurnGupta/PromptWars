@@ -241,3 +241,4 @@ export function ExpenseChatbot({ onRecordsUpdated, isOpen, onClose }: ExpenseCha
     </div>
   );
 }
+

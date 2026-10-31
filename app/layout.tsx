@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
+import { InitialProductLoader } from "@/components/layout/InitialProductLoader";
 
 export const metadata: Metadata = {
   title: "ChoreCraft — Gamified AI Productivity Platform",
@@ -21,6 +22,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="flex flex-col min-h-screen bg-parchment text-slate-text selection:bg-cobalt selection:text-white">
+        <InitialProductLoader />
         <Navbar />
         <main className="flex-1">{children}</main>
         <Footer />

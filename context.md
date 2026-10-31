@@ -20,6 +20,7 @@ PromptWars transforms repetitive, high-friction digital chores into a rewarding,
 5. **Phase 12 Polish & Audio**: Zero-dependency Web Audio API synthesizer (`lib/sound.ts`) for tactile clicks, quadrant snaps, and celebration chimes with audio mute toggle in the navigation bar. **[COMPLETED & TESTED]**
 6. **Phase 13 ChoreCraft Brand Elevation & Dynamic Web Artworks**: User `favicon.png` integration, platform brand elevation to **ChoreCraft**, automatic 12:00 AM IST progress tracker rollover, dynamic random internet photography loaded on every page load with instant re-roll control, scattered canvas pieces with rotational/translational offsets, and streamlined hero/footer decluttering. **[COMPLETED & TESTED]**
 7. **Phase 14 Google Sheets Financial AI Copilot & Setup Guide**: Implemented interactive Financial AI Chatbot in `/expenses` connected to Google Sheet (`Expenses!A:H`) capable of querying trends and executing real-world row additions, edits, and deletions; enhanced lint engine with LLM refactoring; published `SETUP_GUIDE.md` and `.env.local` template for real Gemini, Sheets, and Gmail keys. **[COMPLETED & TESTED]**
+8. **Phase 15 Initial Product Loader Animation & Cloud Deployment Automation**: Implemented `InitialProductLoader.tsx` with user-provided `product_loader.gif` executing strictly on first platform visit; built `cloudbuild.yaml` and `.github/workflows/cloud-run.yml` for automated Google Cloud Run continuous deployment. **[COMPLETED & TESTED]**
 
 ---
 

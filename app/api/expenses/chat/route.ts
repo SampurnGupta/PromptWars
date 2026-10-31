@@ -224,3 +224,4 @@ Your task is to analyze the user's request and return a JSON decision:
     return NextResponse.json({ error: "Failed to process chat query" }, { status: 500 });
   }
 }
+

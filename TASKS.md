@@ -108,3 +108,11 @@
 - [x] **TASK-14.3** [P0] Chatbot UI: Built `components/expenses/ExpenseChatbot.tsx` with live sync status, suggested chips, and real-time ledger updates.
 - [x] **TASK-14.4** [P0] LLM-Powered Code Lint Repair: Enhanced `app/api/lint/fix/route.ts` with Gemini/Groq semantic refactoring support alongside deterministic AST rules.
 - [x] **TASK-14.5** [P0] Credentials & Setup Guide: Created `SETUP_GUIDE.md` and `.env.local` template with step-by-step walkthrough for obtaining Gemini keys, Google Sheets ID, Service Account JSON, and Gmail tracking.
+
+---
+
+## Phase 15: Initial Product Loader Animation & Cloud Deployment Automation
+- [x] **TASK-15.1** [P0] Initial Platform Loader: Created `components/layout/InitialProductLoader.tsx` utilizing user-provided `product_loader.gif` with session persistence, smooth progress bar, and auto-dismiss.
+- [x] **TASK-15.2** [P0] Google Cloud Run Build Configuration: Authored `cloudbuild.yaml` for building and deploying containerized standalone image to `gcr.io/$PROJECT_ID/chorecraft`.
+- [x] **TASK-15.3** [P0] Continuous Cloud Deployment: Configured `.github/workflows/cloud-run.yml` for automated CI/CD pipeline on push to `main`.
+- [x] **TASK-15.4** [P0] Verification: Tested loader behavior via headless browser (`scripts/test-loader.mjs`), confirming single first-load execution and zero reload intrusion.
