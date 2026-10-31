@@ -134,7 +134,12 @@ export function ManualPuzzleModal({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="manual-puzzle-title"
+      className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4"
+    >
       <div className="bg-parchment-card border border-parchment-border rounded-2xl w-full max-w-lg shadow-floating overflow-hidden flex flex-col">
         {/* Modal Header */}
         <div className="px-6 py-4 border-b border-parchment-border flex items-center justify-between bg-parchment-surface">
@@ -143,12 +148,15 @@ export function ManualPuzzleModal({
               <Trophy className="w-4 h-4 text-amber-300" />
             </div>
             <div>
-              <h2 className="text-base font-bold text-slate-text">Stage 2 • Master Puzzle Reward</h2>
+              <h2 id="manual-puzzle-title" className="text-base font-bold text-slate-text">
+                Stage 2 • Master Puzzle Reward
+              </h2>
               <p className="text-[11px] text-slate-muted">Slide image tiles to reconstruct the scenic master artwork</p>
             </div>
           </div>
           <button
             onClick={onClose}
+            aria-label="Close puzzle dialog"
             className="p-1 rounded-md text-slate-muted hover:text-slate-text hover:bg-parchment-border/50"
           >
             <X className="w-5 h-5" />
@@ -177,6 +185,7 @@ export function ManualPuzzleModal({
             <button
               onClick={initPuzzle}
               title="Restart Shuffle"
+              aria-label="Restart puzzle shuffle"
               className="p-1 rounded text-slate-muted hover:text-cobalt hover:bg-parchment-border/50"
             >
               <RotateCcw className="w-3.5 h-3.5" />
@@ -209,6 +218,7 @@ export function ManualPuzzleModal({
                     key={index}
                     disabled={isBlank || isSolved}
                     onClick={() => handleTileClick(index)}
+                    aria-label={isBlank ? "Empty slot" : `Puzzle tile ${tileNumber}`}
                     className={`rounded-lg relative overflow-hidden transition-all duration-150 flex items-center justify-center group ${
                       isBlank
                         ? "bg-slate-950/40 border border-dashed border-slate-700"

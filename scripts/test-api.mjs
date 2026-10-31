@@ -219,11 +219,56 @@ async function runTests() {
     const nosniff = headRes.headers.get("x-content-type-options");
     const frameOptions = headRes.headers.get("x-frame-options");
     const poweredBy = headRes.headers.get("x-powered-by");
+    const permissionsPolicy = headRes.headers.get("permissions-policy");
+    const coop = headRes.headers.get("cross-origin-opener-policy");
+
     assert(nosniff === "nosniff", "X-Content-Type-Options: nosniff header verified");
     assert(frameOptions === "DENY", "X-Frame-Options: DENY header verified");
     assert(!poweredBy, "X-Powered-By header disabled for performance & security");
+    assert(Boolean(permissionsPolicy), "Permissions-Policy header configured");
+    assert(coop === "same-origin", "Cross-Origin-Opener-Policy: same-origin verified");
   } catch (err) {
     assert(false, `Security & headers check failed: ${err.message}`);
+  }
+
+  // 11. Accessibility & Semantic HTML Verification
+  console.log(`\n[Test 11] Accessibility & Semantic HTML Audit`);
+  try {
+    const pageRes = await fetch(`${BASE_URL}/`);
+    assert(pageRes.status === 200, "Landing page loads successfully");
+    const html = await pageRes.text();
+    assert(html.includes('lang="en"'), "HTML specifies lang='en'");
+    assert(html.includes('id="main-content"'), "Semantic main element has id='main-content'");
+    assert(html.includes("Skip to main content"), "Keyboard skip-to-content accessible link present");
+    assert(html.includes("ChoreCraft"), "Document brand title rendered");
+  } catch (err) {
+    assert(false, `Accessibility check failed: ${err.message}`);
+  }
+
+  // 12. API Error Handling & Defensive Boundaries
+  console.log(`\n[Test 12] API Robustness & Input Validation`);
+  try {
+    // Empty text to expense extractor
+    const emptyRes = await fetch(`${BASE_URL}/api/expenses/extract`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text: "" }),
+    });
+    assert(emptyRes.status === 400, "Expense extract rejects empty input with HTTP 400");
+    const emptyJson = await emptyRes.json();
+    assert(emptyJson.success === false, "Returns success: false for invalid input");
+
+    // Empty files array to lint analyze
+    const lintRes = await fetch(`${BASE_URL}/api/lint/analyze`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ files: [] }),
+    });
+    assert(lintRes.status === 200, "Lint analyze gracefully handles empty file list");
+    const lintJson = await lintRes.json();
+    assert(Array.isArray(lintJson.issues) && lintJson.issues.length === 0, "Returns empty issues array");
+  } catch (err) {
+    assert(false, `API robustness test failed: ${err.message}`);
   }
 
   console.log(`\n======================================================`);

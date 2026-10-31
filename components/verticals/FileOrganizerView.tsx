@@ -297,6 +297,7 @@ export function FileOrganizerView() {
                   type="file"
                   multiple
                   id="local-file-selector"
+                  aria-label="Upload local files"
                   onChange={handlePickLocalFiles}
                   className="hidden"
                 />
@@ -323,6 +324,7 @@ export function FileOrganizerView() {
                 type="text"
                 value={prompt}
                 onChange={(e) => setPrompt(e.target.value)}
+                aria-label="File organization instructions"
                 placeholder="e.g. Group academic PDFs together and identify duplicate files"
                 className="w-full rounded-xl border border-parchment-border bg-white px-4 py-3 text-sm text-slate-text focus:border-cobalt focus:ring-1 focus:ring-cobalt outline-none"
               />

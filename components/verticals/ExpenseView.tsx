@@ -291,6 +291,7 @@ export function ExpenseView() {
                 <textarea
                   value={inputText}
                   onChange={(e) => setInputText(e.target.value)}
+                  aria-label="Natural language expense description"
                   placeholder="e.g. Paid ₹1,200 for electricity yesterday via UPI..."
                   rows={3}
                   className="w-full rounded-xl border border-parchment-border bg-white p-3.5 text-sm text-slate-text placeholder:text-slate-400 focus:border-cobalt focus:ring-1 focus:ring-cobalt outline-none resize-none"
@@ -301,6 +302,7 @@ export function ExpenseView() {
                     type="button"
                     onClick={handleVoiceInput}
                     title={isListening ? "Listening..." : "Click to speak"}
+                    aria-label={isListening ? "Stop voice listening" : "Start voice input"}
                     className={`p-2 rounded-lg border text-xs font-medium transition-colors ${
                       isListening
                         ? "bg-red-500 text-white border-red-600 animate-pulse"
@@ -450,6 +452,7 @@ export function ExpenseView() {
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
+                  aria-label="Search expenses by description or transaction ID"
                   placeholder="Search description or TXN ID..."
                   className="w-full bg-white border border-parchment-border rounded-lg pl-8 pr-3 py-1.5 text-slate-text outline-none focus:border-cobalt"
                 />

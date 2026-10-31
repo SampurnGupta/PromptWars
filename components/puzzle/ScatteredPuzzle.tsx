@@ -262,6 +262,7 @@ export function ScatteredPuzzle({
               <button
                 type="button"
                 onClick={onRandomizeArtwork}
+                aria-label="Load new random internet artwork"
                 className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-white border border-parchment-border hover:border-cobalt hover:text-cobalt text-[11px] font-semibold text-slate-text shadow-subtle transition-all active:scale-95"
               >
                 <RotateCcw className="w-3 h-3" />

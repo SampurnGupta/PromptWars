@@ -289,6 +289,7 @@ export function LintFixerView() {
             multiple
             accept=".js,.jsx,.ts,.tsx,.py,.json"
             id="local-code-upload"
+            aria-label="Upload local code files"
             onChange={handleFileUpload}
             className="hidden"
           />
@@ -311,6 +312,7 @@ export function LintFixerView() {
               <select
                 value={scratchFilename}
                 onChange={(e) => setScratchFilename(e.target.value)}
+                aria-label="Virtual file format"
                 className="bg-white border border-parchment-border text-xs font-mono rounded-lg px-2.5 py-1 text-slate-text outline-none focus:border-cobalt"
               >
                 <option value="scratchpad.js">scratchpad.js (JavaScript)</option>
@@ -341,6 +343,7 @@ export function LintFixerView() {
           <textarea
             value={scratchCode}
             onChange={(e) => setScratchCode(e.target.value)}
+            aria-label="Live scratchpad code editor"
             rows={7}
             className="w-full rounded-xl border border-parchment-border bg-slate-900 text-emerald-400 font-mono text-xs p-4 focus:border-cobalt outline-none resize-y"
           />
@@ -354,6 +357,7 @@ export function LintFixerView() {
                 type="url"
                 value={repoUrl}
                 onChange={(e) => setRepoUrl(e.target.value)}
+                aria-label="GitHub repository URL"
                 placeholder="https://github.com/owner/repository"
                 className="w-full rounded-xl border border-parchment-border bg-white px-4 py-3 text-sm text-slate-text font-mono focus:border-cobalt focus:ring-1 focus:ring-cobalt outline-none"
               />

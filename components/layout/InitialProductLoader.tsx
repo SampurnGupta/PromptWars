@@ -63,6 +63,9 @@ export function InitialProductLoader() {
 
   return (
     <div
+      role="dialog"
+      aria-modal="true"
+      aria-label="Initial application loader"
       onClick={handleDismiss}
       className={`fixed inset-0 z-50 flex flex-col items-center justify-center bg-parchment/95 backdrop-blur-md transition-opacity duration-600 ease-in-out cursor-pointer ${
         fading ? "opacity-0 pointer-events-none" : "opacity-100"

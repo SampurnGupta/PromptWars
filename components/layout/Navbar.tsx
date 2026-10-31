@@ -132,6 +132,7 @@ export function Navbar() {
               setMuted(next);
             }}
             title={muted ? "Unmute Audio" : "Mute Audio"}
+            aria-label={muted ? "Unmute sound effects" : "Mute sound effects"}
             className="p-1.5 rounded-md text-slate-muted hover:text-cobalt hover:bg-parchment-border/50 transition-colors"
           >
             {muted ? <VolumeX className="w-4 h-4 text-red-500" /> : <Volume2 className="w-4 h-4" />}
@@ -140,6 +141,7 @@ export function Navbar() {
           <button
             onClick={handleResetCycle}
             title="Start New Cycle"
+            aria-label="Start fresh productivity cycle"
             className="p-1.5 rounded-md text-slate-muted hover:text-cobalt hover:bg-parchment-border/50 transition-colors"
           >
             <RotateCcw className="w-4 h-4" />
@@ -148,6 +150,8 @@ export function Navbar() {
           {/* Mobile menu button */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            aria-label={mobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
+            aria-expanded={mobileMenuOpen}
             className="lg:hidden p-1.5 rounded-md text-slate-text hover:bg-parchment-border/50"
           >
             {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}

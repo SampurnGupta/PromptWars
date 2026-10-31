@@ -3,7 +3,10 @@ import { Sparkles, Terminal, Shield } from "lucide-react";
 
 export function Footer() {
   return (
-    <footer className="border-t border-parchment-border bg-parchment-card/60 mt-16 py-8 text-xs text-slate-muted">
+    <footer
+      role="contentinfo"
+      className="border-t border-parchment-border bg-parchment-card/60 mt-16 py-8 text-xs text-slate-muted"
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
         <div className="flex items-center gap-2">
           <span className="font-semibold text-slate-text">ChoreCraft</span>

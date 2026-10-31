@@ -127,7 +127,12 @@ export function ExpenseChatbot({ onRecordsUpdated, isOpen, onClose }: ExpenseCha
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-y-0 right-0 z-50 w-full sm:w-[480px] bg-white border-l border-parchment-border shadow-2xl flex flex-col animate-in slide-in-from-right duration-300">
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-label="Google Sheet Financial AI Copilot"
+      className="fixed inset-y-0 right-0 z-50 w-full sm:w-[480px] bg-white border-l border-parchment-border shadow-2xl flex flex-col animate-in slide-in-from-right duration-300"
+    >
       {/* Header */}
       <div className="p-4 border-b border-parchment-border bg-parchment/60 flex items-center justify-between">
         <div className="flex items-center gap-2.5">
@@ -147,6 +152,7 @@ export function ExpenseChatbot({ onRecordsUpdated, isOpen, onClose }: ExpenseCha
 
         <button
           onClick={onClose}
+          aria-label="Close Financial Copilot"
           className="p-1.5 rounded-lg text-slate-muted hover:text-slate-text hover:bg-parchment-border/40 transition-colors"
         >
           <X className="w-5 h-5" />
@@ -225,12 +231,14 @@ export function ExpenseChatbot({ onRecordsUpdated, isOpen, onClose }: ExpenseCha
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
+            aria-label="Message to Financial Copilot"
             placeholder="Ask or command (e.g. 'Add ₹200 for tea')..."
             className="flex-1 bg-parchment/40 border border-parchment-border rounded-xl px-3.5 py-2.5 text-xs text-slate-text focus:outline-none focus:border-cobalt transition-colors"
             disabled={isLoading}
           />
           <button
             type="submit"
+            aria-label="Send message"
             disabled={!input.trim() || isLoading}
             className="w-9 h-9 rounded-xl bg-cobalt text-white flex items-center justify-center disabled:opacity-40 hover:bg-cobalt-hover transition-colors shadow-sm"
           >

@@ -327,6 +327,9 @@ export function EmailView() {
                       {/* Checkbox */}
                       <button
                         type="button"
+                        role="checkbox"
+                        aria-checked={isSelected}
+                        aria-label={`Select email from ${email.sender}: ${email.subject}`}
                         onClick={() => {
                           if (isSelected) {
                             setSelectedEmailIds(prev => prev.filter(id => id !== email.id));
@@ -396,7 +399,12 @@ export function EmailView() {
 
       {/* Email Detail Inspector Modal */}
       {inspectedEmail && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-label="Email Inspection"
+          className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4"
+        >
           <div className="bg-white border border-parchment-border rounded-2xl w-full max-w-lg shadow-floating overflow-hidden animate-fade-in">
             <div className="px-6 py-4 border-b border-parchment-border flex items-center justify-between bg-parchment-surface">
               <div className="flex items-center gap-2">
@@ -405,6 +413,7 @@ export function EmailView() {
               </div>
               <button
                 onClick={() => setInspectedEmail(null)}
+                aria-label="Close email inspector"
                 className="p-1 rounded-md text-slate-muted hover:text-slate-text hover:bg-parchment-border/50"
               >
                 <X className="w-4 h-4" />
