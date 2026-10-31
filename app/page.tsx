@@ -1,6 +1,8 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import Link from "next/link";
+import dynamic from "next/dynamic";
 import { 
   Sparkles, 
   ArrowRight, 
@@ -14,7 +16,11 @@ import {
   Clock
 } from "lucide-react";
 import { ScatteredPuzzle } from "@/components/puzzle/ScatteredPuzzle";
-import { ManualPuzzleModal } from "@/components/puzzle/ManualPuzzleModal";
+
+const ManualPuzzleModal = dynamic(
+  () => import("@/components/puzzle/ManualPuzzleModal").then((mod) => mod.ManualPuzzleModal),
+  { ssr: false }
+);
 import { loadLocalGamificationState, startNewCycle } from "@/lib/gamification/engine";
 import { ProductivityCycleState, INITIAL_CYCLE_STATE, VERTICALS_CONFIG } from "@/lib/gamification/types";
 import { getRandomInternetArtwork } from "@/lib/gamification/artwork";
@@ -148,7 +154,7 @@ export default function HomePage() {
           {quickVerticals.map((vert) => {
             const Icon = vert.icon;
             return (
-              <a
+              <Link
                 key={vert.id}
                 href={vert.route}
                 className={`p-4 rounded-xl border transition-all flex flex-col justify-between group ${
@@ -185,7 +191,7 @@ export default function HomePage() {
                   <span>Open Vertical</span>
                   <ArrowRight className="w-3 h-3" />
                 </div>
-              </a>
+              </Link>
             );
           })}
         </div>

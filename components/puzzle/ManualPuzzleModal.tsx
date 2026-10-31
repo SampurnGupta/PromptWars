@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import Image from "next/image";
 import confetti from "canvas-confetti";
 import { 
   X, 
@@ -187,9 +188,12 @@ export function ManualPuzzleModal({
         <div className="p-6 flex flex-col items-center justify-center">
           {showReference ? (
             <div className="w-80 h-80 rounded-xl overflow-hidden border-2 border-cobalt shadow-card relative animate-fade-in">
-              <img
+              <Image
                 src={activeArtworkUrl}
                 alt="Goal Reference"
+                width={320}
+                height={320}
+                unoptimized
                 className="w-full h-full object-cover"
               />
               <div className="absolute bottom-2 left-2 right-2 bg-black/70 backdrop-blur-md text-white text-[10px] text-center py-1 rounded font-mono">

@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import Link from "next/link";
 import { 
   CheckCircle2, 
   ArrowRight, 
@@ -185,18 +186,18 @@ export function ScatteredPuzzle({
 
                     <div className="pt-3 border-t border-white/20 flex items-center justify-between text-white">
                       <span className="text-[11px] font-mono text-slate-300">Chore Resolved</span>
-                      <a
+                      <Link
                         href={piece.route}
                         className="text-xs text-white hover:text-amber-300 font-semibold flex items-center gap-1 transition-colors"
                       >
                         <span>View Details</span>
                         <ArrowRight className="w-3.5 h-3.5" />
-                      </a>
+                      </Link>
                     </div>
                   </div>
                 ) : (
                   // Scattered Floating Interactive Piece
-                  <a
+                  <Link
                     href={piece.route}
                     className="block h-64 rounded-2xl border-2 border-dashed border-cobalt/50 bg-white/95 hover:border-cobalt hover:bg-white shadow-card p-5 flex flex-col justify-between transition-all group cursor-pointer relative overflow-hidden"
                     style={{
@@ -233,7 +234,7 @@ export function ScatteredPuzzle({
                       </span>
                       <ArrowRight className="w-4 h-4" />
                     </div>
-                  </a>
+                  </Link>
                 )}
               </div>
             );

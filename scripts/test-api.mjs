@@ -211,6 +211,21 @@ async function runTests() {
     assert(false, `Evaluation endpoint test failed: ${err.message}`);
   }
 
+  // 10. Security & Efficiency Headers Verification
+  console.log(`\n[Test 10] Security & Efficiency Response Headers Check`);
+  try {
+    const headRes = await fetch(`${BASE_URL}/`);
+    assert(headRes.status === 200, "Home page returns 200 OK");
+    const nosniff = headRes.headers.get("x-content-type-options");
+    const frameOptions = headRes.headers.get("x-frame-options");
+    const poweredBy = headRes.headers.get("x-powered-by");
+    assert(nosniff === "nosniff", "X-Content-Type-Options: nosniff header verified");
+    assert(frameOptions === "DENY", "X-Frame-Options: DENY header verified");
+    assert(!poweredBy, "X-Powered-By header disabled for performance & security");
+  } catch (err) {
+    assert(false, `Security & headers check failed: ${err.message}`);
+  }
+
   console.log(`\n======================================================`);
   console.log(` Test Summary: ${passedCount} Passed, ${failedCount} Failed`);
   console.log(`======================================================\n`);

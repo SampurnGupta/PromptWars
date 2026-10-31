@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import Link from "next/navigation";
+import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { 
   Volume2,
@@ -60,10 +61,13 @@ export function Navbar() {
     <header className="sticky top-0 z-40 bg-parchment/90 backdrop-blur-md border-b border-parchment-border">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
         {/* Brand */}
-        <a href="/" className="flex items-center gap-2.5 group">
-          <img
+        <Link href="/" className="flex items-center gap-2.5 group">
+          <Image
             src="/favicon.png"
             alt="ChoreCraft"
+            width={36}
+            height={36}
+            priority
             className="w-9 h-9 rounded-lg object-contain shadow-sm group-hover:scale-105 transition-transform"
           />
           <div>
@@ -74,7 +78,7 @@ export function Navbar() {
               Gamified Productivity Platform
             </div>
           </div>
-        </a>
+        </Link>
 
         {/* Desktop Navigation Links */}
         <nav className="hidden lg:flex items-center gap-1">
@@ -84,7 +88,7 @@ export function Navbar() {
             const Icon = item.icon;
 
             return (
-              <a
+              <Link
                 key={item.href}
                 href={item.href}
                 className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all flex items-center gap-1.5 ${
@@ -102,7 +106,7 @@ export function Navbar() {
                     }`}
                   />
                 )}
-              </a>
+              </Link>
             );
           })}
         </nav>
@@ -160,7 +164,7 @@ export function Navbar() {
             const Icon = item.icon;
 
             return (
-              <a
+              <Link
                 key={item.href}
                 href={item.href}
                 onClick={() => setMobileMenuOpen(false)}
@@ -173,7 +177,7 @@ export function Navbar() {
                   <span>{item.label}</span>
                 </div>
                 {isCompleted && <CheckCircle2 className="w-4 h-4 text-emerald-600" />}
-              </a>
+              </Link>
             );
           })}
         </div>

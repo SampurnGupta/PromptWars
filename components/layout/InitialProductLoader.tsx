@@ -71,9 +71,13 @@ export function InitialProductLoader() {
       <div className="flex flex-col items-center justify-center p-8 max-w-sm w-full mx-auto text-center space-y-6 animate-in fade-in zoom-in-95 duration-500">
         {/* Animated Product Loader GIF */}
         <div className="relative w-48 h-48 sm:w-56 sm:h-56 flex items-center justify-center bg-white/70 border border-parchment-border rounded-3xl p-4 shadow-floating overflow-hidden">
-          <img
+          <Image
             src="/product_loader.gif"
             alt="Loading ChoreCraft..."
+            width={224}
+            height={224}
+            priority
+            unoptimized
             className="w-full h-full object-contain"
           />
         </div>

@@ -179,19 +179,22 @@ Visit [http://localhost:3000](http://localhost:3000) in your browser.
 PromptWars includes both automated API integration tests and automated headless Chrome browser tests:
 
 ```bash
-# 1. Run full API integration test suite (33 assertions across 7 modules)
+# 1. Run ESLint code quality suite (0 warnings, 0 errors)
+npm run lint
+
+# 2. Run full API & security integration test suite (54 assertions across 10 modules)
 npm test
 
-# 2. Run automated headless Chrome browser test (captures screenshots of all 5 views)
+# 3. Run automated headless Chrome browser test (captures screenshots of all 5 views)
 npm run test:browser
 
-# 3. Run all tests simultaneously
-npm run test:all
+# 4. Run automated full-cycle 7-step walkthrough
+npm run test:cycle
 
-# 4. Type check TypeScript codebase
+# 5. Type check TypeScript codebase
 npx tsc --noEmit
 
-# 5. Production build check (standalone traces)
+# 6. Production build check (standalone traces & bundle optimizations)
 npm run build
 ```
 

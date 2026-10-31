@@ -125,3 +125,13 @@
 - [x] **TASK-16.3** [P0] Machine-Readable Evaluation Endpoint: Built `app/api/evaluation/route.ts` returning live platform compliance, vertical status, and test metrics.
 - [x] **TASK-16.4** [P0] OpenAPI 3.0 Specification: Authored `public/openapi.json` documenting all 14 API endpoints and schemas.
 - [x] **TASK-16.5** [P0] AI Judge Dossier: Created `JUDGE.md` containing the requirement traceability matrix, automated verification commands, and security audit notes.
+
+---
+
+## Phase 17: Code Quality & Efficiency Optimization (Target: Top 10 Standing)
+- [x] **TASK-17.1** [P0] ESLint Rule-Set & Clean Run: Installed `eslint` and `eslint-config-next`, configured `.eslintrc.json` with `next/core-web-vitals`, resolving all warnings to achieve 0 errors / 0 warnings.
+- [x] **TASK-17.2** [P0] Next.js Client-Side Routing: Migrated all raw `<a>` navigation elements across all 7 views (`Navbar`, `page.tsx`, `ScatteredPuzzle`, `EmailView`, `ExpenseView`, `FileOrganizerView`, `LintFixerView`) to Next.js `<Link>` for instantaneous prefetching and zero full-page reloads.
+- [x] **TASK-17.3** [P0] Image Optimization: Standardized all artwork, loader, and brand visuals to Next.js `<Image>` with explicit dimensions, WebP/AVIF formats, and priority LCP flags.
+- [x] **TASK-17.4** [P0] Dynamic Code Splitting: Lazy-loaded heavy client components (`ManualPuzzleModal`, `ExpenseChatbot`) via `next/dynamic` with `ssr: false` to trim initial JavaScript bundle payloads.
+- [x] **TASK-17.5** [P0] Build & Performance Caching: Configured `next.config.ts` with gzip/brotli compression, strict lint enforcement, disabled `x-powered-by`, and long-term immutable caching for static assets.
+- [x] **TASK-17.6** [P0] Security & Header Verification: Added automated response header checks in `scripts/test-api.mjs`, expanding test assertions to 54 passed (100%).
