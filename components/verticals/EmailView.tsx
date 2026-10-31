@@ -187,7 +187,7 @@ export function EmailView() {
             Primary Inbox Status: {emails.length} Unread Messages
           </h2>
           <p className="text-xs text-slate-muted mt-0.5">
-            Operating safely on configured Google Demo Mailbox with read/star permissions only.
+            Automatic priority classification with action item and deadline extraction.
           </p>
         </div>
 

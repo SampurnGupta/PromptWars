@@ -11,29 +11,8 @@ export interface ExpenseRecord {
   createdAt: string;
 }
 
-// In-memory demo store for when Google Sheet ID or credentials are not yet linked
-const inMemoryDemoExpenses: ExpenseRecord[] = [
-  {
-    transactionId: "TXN-88124",
-    date: new Date(Date.now() - 86400000).toISOString().split("T")[0],
-    description: "Team lunch at cafe",
-    category: "Food & Dining",
-    amount: 650,
-    currency: "INR",
-    paymentMethod: "UPI",
-    createdAt: new Date(Date.now() - 86400000).toISOString(),
-  },
-  {
-    transactionId: "TXN-88125",
-    date: new Date(Date.now() - 43200000).toISOString().split("T")[0],
-    description: "Cloud hosting subscription",
-    category: "Software & Utilities",
-    amount: 1800,
-    currency: "INR",
-    paymentMethod: "Credit Card",
-    createdAt: new Date(Date.now() - 43200000).toISOString(),
-  },
-];
+// Store for recorded expenses when Google Sheet credentials are not yet configured
+const inMemoryDemoExpenses: ExpenseRecord[] = [];
 
 function getGoogleSheetsClient() {
   const email = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL;

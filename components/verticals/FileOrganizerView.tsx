@@ -29,16 +29,7 @@ interface ActionItem {
 
 export function FileOrganizerView() {
   const [prompt, setPrompt] = useState("Organize all files systematically by file type and category");
-  const [files, setFiles] = useState<Array<{ name: string; size: number }>>([
-    { name: "Quarterly_Financial_Report_2026.pdf", size: 1250000 },
-    { name: "Quarterly_Financial_Report_2026 (1).pdf", size: 1250000 },
-    { name: "hero_banner_final_v2.png", size: 3400000 },
-    { name: "dataset_customer_survey.csv", size: 840000 },
-    { name: "app_architecture_diagram.svg", size: 450000 },
-    { name: "meeting_notes_sync.txt", size: 12000 },
-    { name: "client_nda_signed.pdf", size: 2100000 },
-    { name: "backup_archive_oct.zip", size: 18400000 },
-  ]);
+  const [files, setFiles] = useState<Array<{ name: string; size: number }>>([]);
   const [dirHandle, setDirHandle] = useState<any | null>(null);
   const [planning, setPlanning] = useState(false);
   const [executing, setExecuting] = useState(false);
@@ -57,7 +48,7 @@ export function FileOrganizerView() {
 
   const handlePickDirectory = async () => {
     if (typeof window === "undefined" || !("showDirectoryPicker" in window)) {
-      alert("File System Access API is not supported in this browser. Please use the universal ZIP archive organizer below.");
+      alert("File System Access API is not supported in this browser. Please use the universal ZIP archive organizer below or select files directly.");
       return;
     }
 
@@ -82,6 +73,31 @@ export function FileOrganizerView() {
         console.warn("Directory picker error:", err);
       }
     }
+  };
+
+  const handlePickLocalFiles = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selected = e.target.files;
+    if (!selected || selected.length === 0) return;
+    const loaded: Array<{ name: string; size: number }> = [];
+    for (let i = 0; i < selected.length; i++) {
+      loaded.push({ name: selected[i].name, size: selected[i].size });
+    }
+    setFiles(loaded);
+    setStatusMessage(`Loaded ${loaded.length} files from your computer.`);
+  };
+
+  const handleLoadDemoDataset = () => {
+    setFiles([
+      { name: "Quarterly_Financial_Report_2026.pdf", size: 1250000 },
+      { name: "Quarterly_Financial_Report_2026 (1).pdf", size: 1250000 },
+      { name: "hero_banner_final_v2.png", size: 3400000 },
+      { name: "dataset_customer_survey.csv", size: 840000 },
+      { name: "app_architecture_diagram.svg", size: 450000 },
+      { name: "meeting_notes_sync.txt", size: 12000 },
+      { name: "client_nda_signed.pdf", size: 2100000 },
+      { name: "backup_archive_oct.zip", size: 18400000 },
+    ]);
+    setStatusMessage("Loaded 8 sample files for testing.");
   };
 
   const handleGeneratePlan = async () => {
@@ -270,19 +286,35 @@ export function FileOrganizerView() {
         <div className="lg:col-span-2 space-y-6">
           {/* Natural Language Prompt & Directory Selection */}
           <div className="bg-parchment-card border border-parchment-border rounded-2xl p-6 shadow-subtle">
-            <div className="flex items-center justify-between mb-3">
+            <div className="flex flex-wrap items-center justify-between mb-3 gap-2">
               <h2 className="text-base font-bold text-slate-text flex items-center gap-2">
                 <FolderKanban className="w-4 h-4 text-cobalt" />
                 <span>File Organization Intent</span>
               </h2>
-              <button
-                type="button"
-                onClick={handlePickDirectory}
-                className="text-xs font-semibold text-cobalt bg-white border border-cobalt/30 hover:bg-cobalt-light px-3 py-1.5 rounded-lg flex items-center gap-1.5 shadow-sm"
-              >
-                <FolderPlus className="w-3.5 h-3.5" />
-                <span>{dirHandle ? `Connected: ${dirHandle.name}` : "Pick Local Directory (API)"}</span>
-              </button>
+              <div className="flex items-center gap-2">
+                <input
+                  type="file"
+                  multiple
+                  id="local-file-selector"
+                  onChange={handlePickLocalFiles}
+                  className="hidden"
+                />
+                <label
+                  htmlFor="local-file-selector"
+                  className="cursor-pointer text-xs font-semibold text-slate-text bg-white border border-parchment-border hover:border-cobalt px-3 py-1.5 rounded-lg flex items-center gap-1.5 shadow-sm"
+                >
+                  <FileText className="w-3.5 h-3.5 text-cobalt" />
+                  <span>Select Real Files</span>
+                </label>
+                <button
+                  type="button"
+                  onClick={handlePickDirectory}
+                  className="text-xs font-semibold text-cobalt bg-white border border-cobalt/30 hover:bg-cobalt-light px-3 py-1.5 rounded-lg flex items-center gap-1.5 shadow-sm"
+                >
+                  <FolderPlus className="w-3.5 h-3.5" />
+                  <span>{dirHandle ? `Dir: ${dirHandle.name}` : "Pick Folder (API)"}</span>
+                </button>
+              </div>
             </div>
 
             <div className="space-y-4">
@@ -316,7 +348,7 @@ export function FileOrganizerView() {
                 <button
                   type="button"
                   onClick={handleGeneratePlan}
-                  disabled={planning}
+                  disabled={planning || files.length === 0}
                   className="flex items-center gap-2 bg-cobalt text-white px-5 py-2.5 rounded-xl font-bold text-sm hover:bg-cobalt-hover disabled:opacity-50 transition-colors shadow-sm"
                 >
                   {planning ? (
@@ -401,29 +433,62 @@ export function FileOrganizerView() {
 
           {/* Current Target Files List */}
           <div className="bg-parchment-card border border-parchment-border rounded-2xl p-6 shadow-subtle">
-            <h3 className="text-sm font-bold text-slate-text mb-3 flex items-center justify-between">
-              <span>Current Target Files ({files.length} Files)</span>
-              <span className="text-xs text-slate-muted font-mono">
-                {dirHandle ? `Directory: ${dirHandle.name}` : "Demo Target Directory"}
-              </span>
-            </h3>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
-              {files.map((f, idx) => (
-                <div
-                  key={idx}
-                  className="p-2.5 rounded-lg bg-white border border-parchment-border flex items-center justify-between"
-                >
-                  <div className="flex items-center gap-2 truncate">
-                    <FileText className="w-3.5 h-3.5 text-cobalt flex-shrink-0" />
-                    <span className="font-mono text-[11px] truncate">{f.name}</span>
-                  </div>
-                  <span className="font-mono text-[10px] text-slate-muted whitespace-nowrap ml-2">
-                    {(f.size / 1024).toFixed(0)} KB
-                  </span>
-                </div>
-              ))}
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-sm font-bold text-slate-text flex items-center gap-2">
+                <span>Target Files ({files.length} Files)</span>
+              </h3>
+              <div className="flex items-center gap-2">
+                {files.length === 0 && (
+                  <button
+                    type="button"
+                    onClick={handleLoadDemoDataset}
+                    className="text-[11px] text-cobalt hover:underline font-semibold"
+                  >
+                    Load Sample Workspace
+                  </button>
+                )}
+                {files.length > 0 && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setFiles([]);
+                      setPlannedActions([]);
+                      setDirHandle(null);
+                    }}
+                    className="text-[11px] text-red-600 hover:underline"
+                  >
+                    Clear Files
+                  </button>
+                )}
+              </div>
             </div>
+
+            {files.length === 0 ? (
+              <div className="p-8 border border-dashed border-parchment-border rounded-xl text-center bg-white/60">
+                <FolderPlus className="w-8 h-8 text-cobalt/60 mx-auto mb-2" />
+                <h4 className="text-xs font-bold text-slate-text">No Local Files Connected</h4>
+                <p className="text-[11px] text-slate-muted mt-1 max-w-sm mx-auto">
+                  Click <strong>"Select Real Files"</strong> or <strong>"Pick Folder (API)"</strong> above to load files from your machine, or upload a ZIP archive on the right.
+                </p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+                {files.map((f, idx) => (
+                  <div
+                    key={idx}
+                    className="p-2.5 rounded-lg bg-white border border-parchment-border flex items-center justify-between"
+                  >
+                    <div className="flex items-center gap-2 truncate">
+                      <FileText className="w-3.5 h-3.5 text-cobalt flex-shrink-0" />
+                      <span className="font-mono text-[11px] truncate">{f.name}</span>
+                    </div>
+                    <span className="font-mono text-[10px] text-slate-muted whitespace-nowrap ml-2">
+                      {(f.size / 1024).toFixed(0)} KB
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
 

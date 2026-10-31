@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { DemoBanner } from "@/components/layout/DemoBanner";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 
@@ -17,7 +16,6 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="flex flex-col min-h-screen bg-parchment text-slate-text selection:bg-cobalt selection:text-white">
-        <DemoBanner />
         <Navbar />
         <main className="flex-1">{children}</main>
         <Footer />

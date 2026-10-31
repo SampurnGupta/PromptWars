@@ -47,16 +47,7 @@ export function LintFixerView() {
   const [scratchCode, setScratchCode] = useState(`var total = 0;\nfunction calculateDiscount(price) {\n  if (price == 0) {\n    console.log("Zero price detected");   \n    return 0;\n  }\n  var discount = price * 0.15;\n  return price - discount;\n}\n`);
   const [scratchFilename, setScratchFilename] = useState("scratchpad.js");
   const [repoUrl, setRepoUrl] = useState("https://github.com/facebook/react");
-  const [files, setFiles] = useState<CodeFile[]>([
-    {
-      path: "src/paymentProcessor.js",
-      content: `var transactionFee = 2.50;\nfunction processOrder(price, user) {\n  if (price == 0) {\n    console.log("Order is free");   \n    return 0;\n  }\n  var total = price + transactionFee;\n  return total;\n}\n`,
-    },
-    {
-      path: "src/authService.ts",
-      content: `export function verifySession(session: any) {\n  var isValid = session.active;\n  if (isValid != null) {\n    console.log("Session validated"); \n  }\n  return isValid;\n}\n`,
-    },
-  ]);
+  const [files, setFiles] = useState<CodeFile[]>([]);
   const [analyzing, setAnalyzing] = useState(false);
   const [fixing, setFixing] = useState(false);
   const [issues, setIssues] = useState<LintIssue[]>([]);
@@ -64,9 +55,19 @@ export function LintFixerView() {
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const [gamificationState, setGamificationState] = useState<ProductivityCycleState>(INITIAL_CYCLE_STATE);
 
-  useEffect(() => {
-    setGamificationState(loadLocalGamificationState());
-  }, []);
+  const handleLoadSampleCode = () => {
+    setFiles([
+      {
+        path: "src/paymentProcessor.js",
+        content: `var transactionFee = 2.50;\nfunction processOrder(price, user) {\n  if (price == 0) {\n    console.log("Order is free");   \n    return 0;\n  }\n  var total = price + transactionFee;\n  return total;\n}\n`,
+      },
+      {
+        path: "src/authService.ts",
+        content: `export function verifySession(session: any) {\n  var isValid = session.active;\n  if (isValid != null) {\n    console.log("Session validated"); \n  }\n  return isValid;\n}\n`,
+      },
+    ]);
+    setStatusMessage("Loaded 2 sample code files for lint testing.");
+  };
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const uploadedFiles = e.target.files;
@@ -379,8 +380,8 @@ export function LintFixerView() {
         <div className="flex items-center gap-3">
           <button
             onClick={handleScanLint}
-            disabled={analyzing}
-            className="flex items-center gap-1.5 bg-parchment-surface border border-parchment-border hover:bg-parchment text-slate-text text-xs font-semibold px-4 py-2 rounded-lg"
+            disabled={analyzing || files.length === 0}
+            className="flex items-center gap-1.5 bg-parchment-surface border border-parchment-border hover:bg-parchment text-slate-text text-xs font-semibold px-4 py-2 rounded-lg disabled:opacity-40"
           >
             {analyzing ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Terminal className="w-3.5 h-3.5 text-cobalt" />}
             <span>Run Lint Scan</span>
@@ -493,6 +494,23 @@ export function LintFixerView() {
               </div>
             </div>
           ))}
+        </div>
+      ) : files.length === 0 ? (
+        <div className="bg-white border border-dashed border-parchment-border rounded-2xl p-8 text-center shadow-subtle">
+          <FileCode className="w-8 h-8 text-cobalt/60 mx-auto mb-2" />
+          <h4 className="text-xs font-bold text-slate-text">No Code Files Loaded</h4>
+          <p className="text-[11px] text-slate-muted mt-1 max-w-sm mx-auto">
+            Ingest a public GitHub repository, upload local files from your machine, or type code in the Live Scratchpad.
+          </p>
+          <div className="mt-3">
+            <button
+              type="button"
+              onClick={handleLoadSampleCode}
+              className="text-xs text-cobalt hover:underline font-semibold"
+            >
+              Load Sample Code
+            </button>
+          </div>
         </div>
       ) : (
         /* Target Files Preview */
