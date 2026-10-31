@@ -44,3 +44,4 @@ jobs:
       - name: Build Container Image
         run: |
           docker build -t gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE_NAME }}:${{ github.sha }} .
+
