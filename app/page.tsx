@@ -17,13 +17,22 @@ import { ScatteredPuzzle } from "@/components/puzzle/ScatteredPuzzle";
 import { ManualPuzzleModal } from "@/components/puzzle/ManualPuzzleModal";
 import { loadLocalGamificationState, startNewCycle } from "@/lib/gamification/engine";
 import { ProductivityCycleState, INITIAL_CYCLE_STATE, VERTICALS_CONFIG } from "@/lib/gamification/types";
+import { getRandomInternetArtwork } from "@/lib/gamification/artwork";
 
 export default function HomePage() {
   const [state, setState] = useState<ProductivityCycleState>(INITIAL_CYCLE_STATE);
   const [manualPuzzleOpen, setManualPuzzleOpen] = useState(false);
+  const [artwork, setArtwork] = useState<{ id: string; title: string; url: string; photographer: string }>({
+    id: "mountain_lake",
+    title: "Alpine Lake Reflection",
+    url: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80",
+    photographer: "Bailey Zindel",
+  });
 
   useEffect(() => {
     setState(loadLocalGamificationState());
+    // Use a fresh random internet image on every page load
+    setArtwork(getRandomInternetArtwork());
 
     const handleUpdate = () => {
       setState(loadLocalGamificationState());
@@ -31,9 +40,22 @@ export default function HomePage() {
 
     window.addEventListener("gamification_updated", handleUpdate);
     window.addEventListener("storage", handleUpdate);
+
+    // Auto-refresh checker for 12:00 AM IST midnight rollover
+    const midnightChecker = setInterval(() => {
+      const refreshed = loadLocalGamificationState();
+      setState((prev) => {
+        if (refreshed.cycleId !== prev.cycleId || refreshed.xp !== prev.xp) {
+          return refreshed;
+        }
+        return prev;
+      });
+    }, 20000);
+
     return () => {
       window.removeEventListener("gamification_updated", handleUpdate);
       window.removeEventListener("storage", handleUpdate);
+      clearInterval(midnightChecker);
     };
   }, []);
 
@@ -80,13 +102,8 @@ export default function HomePage() {
       {/* Hero Section */}
       <section className="border-b border-parchment-border bg-gradient-to-b from-parchment-surface to-parchment py-12 sm:py-16 px-4">
         <div className="max-w-4xl mx-auto text-center space-y-4">
-          <div className="inline-flex items-center gap-2 bg-cobalt-light text-cobalt px-3 py-1 rounded-full text-xs font-semibold font-mono tracking-wide">
-            <Sparkles className="w-3.5 h-3.5 text-cobalt" />
-            <span>Gamified AI Productivity Engine • Cycle #{state.cycleNumber}</span>
-          </div>
-
           <h1 className="text-3xl sm:text-5xl font-black text-slate-text tracking-tight max-w-3xl mx-auto leading-tight">
-            Stop Procrastinating. Turn Digital Chores Into Solved Puzzles.
+            Automate the Chores. Complete the Puzzle.
           </h1>
 
           <p className="text-sm sm:text-base text-slate-muted max-w-2xl mx-auto font-normal">
@@ -113,6 +130,10 @@ export default function HomePage() {
       <section className="px-4 py-8">
         <ScatteredPuzzle
           state={state}
+          artworkUrl={artwork.url}
+          artworkTitle={artwork.title}
+          photographer={artwork.photographer}
+          onRandomizeArtwork={() => setArtwork(getRandomInternetArtwork())}
           onOpenManualPuzzle={() => setManualPuzzleOpen(true)}
         />
       </section>
@@ -176,7 +197,7 @@ export default function HomePage() {
           <div className="bg-parchment-card border border-parchment-border rounded-2xl p-6 shadow-subtle">
             <h3 className="text-sm font-bold text-slate-text mb-4 flex items-center gap-2">
               <Clock className="w-4 h-4 text-cobalt" />
-              <span>Real-World Actions Execution Log</span>
+              <span>Execution log</span>
             </h3>
 
             <div className="space-y-2.5">
@@ -204,6 +225,7 @@ export default function HomePage() {
         isOpen={manualPuzzleOpen}
         onClose={() => setManualPuzzleOpen(false)}
         state={state}
+        artworkUrl={artwork.url}
         onCycleUpdate={(newState) => setState(newState)}
       />
     </div>

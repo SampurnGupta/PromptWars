@@ -77,6 +77,19 @@ export interface ProductivityCycleState {
   manualPuzzleMoves: number;
   manualPuzzleTimeSeconds: number;
   activeArtworkId: string;
+  lastActiveDateIST: string;
+}
+
+export function getCurrentISTDateString(): string {
+  try {
+    // Standard IANA timezone representation for Indian Standard Time (UTC+5:30)
+    return new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Kolkata" }).format(new Date());
+  } catch {
+    // Fallback: UTC + 5.5 hours
+    const now = new Date();
+    const istTime = new Date(now.getTime() + (5.5 * 60 * 60 * 1000));
+    return istTime.toISOString().split("T")[0];
+  }
 }
 
 export const INITIAL_CYCLE_STATE: ProductivityCycleState = {
@@ -91,5 +104,6 @@ export const INITIAL_CYCLE_STATE: ProductivityCycleState = {
   manualPuzzleMoves: 0,
   manualPuzzleTimeSeconds: 0,
   activeArtworkId: "alpine_sanctuary",
+  lastActiveDateIST: getCurrentISTDateString(),
 };
 

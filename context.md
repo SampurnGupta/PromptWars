@@ -18,6 +18,7 @@ PromptWars transforms repetitive, high-friction digital chores into a rewarding,
 3. **Stage 2 Gamification (Final Reward)**: Upon 4/4 completion (1000 XP), a separate interactive Manual Puzzle Challenge unlocks, allowing the user to solve a shuffled scenic/typography tile puzzle with Web Audio API sound effects, confetti celebrations, and cycle reset. **[COMPLETED & TESTED]**
 4. **Google Cloud Run Ready Deployment**: Dockerized standalone container, `/api/health` monitoring, secure demo credentials on backend, clean responsive UI matching the requested cobalt/eggshell aesthetic (`#0755B5`, `#F4F2E8`). **[COMPLETED & TESTED]**
 5. **Phase 12 Polish & Audio**: Zero-dependency Web Audio API synthesizer (`lib/sound.ts`) for tactile clicks, quadrant snaps, and celebration chimes with audio mute toggle in the navigation bar. **[COMPLETED & TESTED]**
+6. **Phase 13 ChoreCraft Brand Elevation & Dynamic Web Artworks**: User `favicon.png` integration, platform brand elevation to **ChoreCraft**, automatic 12:00 AM IST progress tracker rollover, dynamic random internet photography loaded on every page load with instant re-roll control, scattered canvas pieces with rotational/translational offsets, and streamlined hero/footer decluttering. **[COMPLETED & TESTED]**
 
 ---
 

@@ -89,3 +89,13 @@
 - [x] **TASK-12.3** [P1] Expense search, category filtering & CSV ledger download in `/expenses`.
 - [x] **TASK-12.4** [P1] Email selective batch approval checkboxes & detail inspection modal in `/email`.
 - [x] **TASK-12.5** [P1] Automated End-to-End Full Cycle Browser Walkthrough script (`scripts/test-full-cycle.mjs`).
+
+---
+
+## Phase 13: ChoreCraft Brand Elevation, Dynamic Web Artworks & 12 AM IST Rollover
+- [x] **TASK-13.1** [P1] Add user-provided `favicon.png` and wire app metadata (`app/layout.tsx`).
+- [x] **TASK-13.2** [P1] Brand elevation from PromptWars to **ChoreCraft** across Navbar, Footer, and Page metadata.
+- [x] **TASK-13.3** [P1] Automated 12:00 AM IST midnight progress tracker rollover using IANA timezone `Asia/Kolkata`.
+- [x] **TASK-13.4** [P1] Dynamic random internet photography selected on every page load (`lib/gamification/artwork.ts`).
+- [x] **TASK-13.5** [P1] Scattered interactive puzzle canvas with rotational & translational tilts, hover un-tilt, and live re-roll control.
+- [x] **TASK-13.6** [P1] Declutter hero and footer: remove redundant badges and deployment credit lines, rename "Real-World Actions Execution Log" to "Execution log".

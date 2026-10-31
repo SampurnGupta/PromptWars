@@ -61,18 +61,17 @@ export function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
         {/* Brand */}
         <a href="/" className="flex items-center gap-2.5 group">
-          <div className="w-9 h-9 rounded-lg bg-cobalt flex items-center justify-center text-white font-black text-lg shadow-sm group-hover:bg-cobalt-hover transition-colors">
-            P
-          </div>
+          <img
+            src="/favicon.png"
+            alt="ChoreCraft"
+            className="w-9 h-9 rounded-lg object-contain shadow-sm group-hover:scale-105 transition-transform"
+          />
           <div>
             <div className="font-bold text-slate-text tracking-tight flex items-center gap-1.5">
-              <span>PromptWars</span>
-              <span className="text-[10px] uppercase tracking-wider font-mono px-1.5 py-0.5 rounded bg-cobalt-light text-cobalt font-semibold">
-                AI Chores
-              </span>
+              <span>ChoreCraft</span>
             </div>
             <div className="text-[11px] text-slate-muted hidden sm:block">
-              Turn tedious digital chores into unlocked games
+              Gamified Productivity Platform
             </div>
           </div>
         </a>

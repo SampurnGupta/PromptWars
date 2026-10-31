@@ -21,6 +21,7 @@ interface ManualPuzzleModalProps {
   onClose: () => void;
   state: ProductivityCycleState;
   onCycleUpdate: (newState: ProductivityCycleState) => void;
+  artworkUrl?: string;
 }
 
 // 3x3 puzzle representation (9 tiles: 1-8, with 0 as blank)
@@ -43,6 +44,7 @@ export function ManualPuzzleModal({
   onClose,
   state,
   onCycleUpdate,
+  artworkUrl,
 }: ManualPuzzleModalProps) {
   // Tile state (solvable configuration needing a few moves)
   const [tiles, setTiles] = useState<number[]>([1, 2, 3, 4, 0, 5, 7, 8, 6]);
@@ -52,9 +54,9 @@ export function ManualPuzzleModal({
   const [isSolved, setIsSolved] = useState(false);
   const [showReference, setShowReference] = useState(false);
 
-  const activeArtworkUrl = state.activeArtworkId === "golden_hour_fjord"
+  const activeArtworkUrl = artworkUrl || (state.activeArtworkId === "golden_hour_fjord"
     ? "/puzzles/golden_hour_fjord.svg"
-    : "/puzzles/alpine_sanctuary.svg";
+    : "/puzzles/alpine_sanctuary.svg");
 
   const initPuzzle = () => {
     // Solvable configuration

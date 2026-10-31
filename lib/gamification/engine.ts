@@ -4,6 +4,7 @@ import {
   VerticalId,
   VERTICALS_CONFIG,
   TaskCompletionLog,
+  getCurrentISTDateString,
 } from "./types";
 
 const STORAGE_KEY = "promptwars_productivity_state_v1";
@@ -14,12 +15,28 @@ export function loadLocalGamificationState(): ProductivityCycleState {
   }
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return INITIAL_CYCLE_STATE;
+    const todayIST = getCurrentISTDateString();
+    if (!raw) {
+      const fresh = { ...INITIAL_CYCLE_STATE, lastActiveDateIST: todayIST };
+      saveLocalGamificationState(fresh);
+      return fresh;
+    }
     const parsed = JSON.parse(raw);
-    return {
+    const loaded: ProductivityCycleState = {
       ...INITIAL_CYCLE_STATE,
       ...parsed,
     };
+
+    // Automatic rollover at 12:00 AM IST: If stored IST date is before today's IST date, refresh progress!
+    if (loaded.lastActiveDateIST && loaded.lastActiveDateIST !== todayIST) {
+      console.log(`[Midnight 12 AM IST Rollover] Previous date: ${loaded.lastActiveDateIST}, Today IST: ${todayIST}. Refreshing daily cycle.`);
+      const renewed = startNewCycle(loaded);
+      renewed.lastActiveDateIST = todayIST;
+      saveLocalGamificationState(renewed);
+      return renewed;
+    }
+
+    return loaded;
   } catch (err) {
     console.warn("Failed to load local gamification state:", err);
     return INITIAL_CYCLE_STATE;
@@ -111,6 +128,7 @@ export function startNewCycle(currentState: ProductivityCycleState): Productivit
     manualPuzzleMoves: 0,
     manualPuzzleTimeSeconds: 0,
     activeArtworkId: nextArtwork,
+    lastActiveDateIST: getCurrentISTDateString(),
   };
 
   saveLocalGamificationState(newState);

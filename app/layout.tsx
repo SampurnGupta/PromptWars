@@ -4,8 +4,13 @@ import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 
 export const metadata: Metadata = {
-  title: "PromptWars — Gamified AI Productivity Platform",
+  title: "ChoreCraft — Gamified AI Productivity Platform",
   description: "Execute real-world digital chores in the background while unlocking interactive puzzle experiences.",
+  icons: {
+    icon: "/favicon.png",
+    shortcut: "/favicon.ico",
+    apple: "/favicon.png",
+  },
 };
 
 export default function RootLayout({

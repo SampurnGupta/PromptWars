@@ -1,4 +1,4 @@
-# PromptWars — Gamified AI Productivity Platform
+# ChoreCraft — Gamified AI Productivity Platform
 
 > **Transform tedious digital chores into a rewarding, two-stage interactive puzzle experience. Real chores executed in the background through verified AI workflows.**
 
@@ -18,7 +18,7 @@ Every knowledge worker procrastinates on repetitive, high-friction digital maint
 - Untangling chaotic `Downloads` directories filled with duplicate files and random versions.
 - Hunting down syntax, type, and formatting lint errors scattered across codebases.
 
-**PromptWars** eliminates procrastination by replacing chore friction with game-loop gratification. Instead of dreading digital maintenance, users trigger focused background AI automations that execute genuine operations while unlocking a satisfying two-stage gamification puzzle.
+**ChoreCraft** eliminates procrastination by replacing chore friction with game-loop gratification. Instead of dreading digital maintenance, users trigger focused background AI automations that execute genuine operations while unlocking a satisfying two-stage gamification puzzle.
 
 ---
 
@@ -26,7 +26,7 @@ Every knowledge worker procrastinates on repetitive, high-friction digital maint
 
 ```
                                 +--------------------------------------------+
-                                |          PromptWars Frontend Shell         |
+                                |          ChoreCraft Frontend Shell         |
                                 |     Nualt Design System (#0755B5/#F4F2E8)  |
                                 +----------------------+---------------------+
                                                        |
