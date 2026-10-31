@@ -50,7 +50,7 @@ Every knowledge worker procrastinates on repetitive, high-friction digital maint
             +--------------------+   +--------------------+   +--------------------+
             |  Shared AI Engine  |   | Integration Layer  |   |  Browser / Client  |
             |  Gemini / Groq /   |   | Gmail API / Sheets |   | FileSystem Access  |
-            |  Structured JSON   |   | API / GitHub API   |   | API & ZIP Fallback |
+            |  Structured JSON   |   | API / WhatsApp API |   | API & ZIP Fallback |
             +--------------------+   +--------------------+   +--------------------+
 ```
 
@@ -77,7 +77,7 @@ Every knowledge worker procrastinates on repetitive, high-friction digital maint
 - **Safety First**: Never deletes files; flags duplicate copies (*e.g., `report (1).pdf`*) for user review.
 
 ### 4. AI-Powered Lint & Code Repair (`/lint`)
-- **Flexible Ingestion**: Upload code files or provide any public GitHub repository URL (`https://github.com/owner/repo`) with built-in SSRF guards.
+- **Flexible Ingestion**: Upload local code files or provide any public GitHub repository URL (`https://github.com/owner/repo`) with built-in SSRF guards.
 - **Rule Engine**: Scans for real production code defects: `no-console`, `no-var`, loose equality `==`, trailing spaces, and untyped `any`.
 - **Targeted AI Repair**: Produces side-by-side interactive code diffs preserving program logic, and generates a downloadable ZIP of the corrected codebase.
 
@@ -87,8 +87,8 @@ Every knowledge worker procrastinates on repetitive, high-friction digital maint
 
 | Stage | Mode | Mechanic | Reward |
 |---|---|---|---|
-| **Stage 1** | **Productivity Assembly** | Homepage displays 4 floating, scattered puzzle quadrants. As each vertical succeeds, its quadrant smoothly snaps into place. | **+250 XP** per vertical (1,000 XP max per cycle). |
-| **Stage 2** | **Manual Puzzle Challenge** | Unlocked **only** when all 4 tasks are complete (100%). Users solve an interactive tile-sliding puzzle. | Move counter, timer, confetti celebration, and cycle restart option. |
+| **Stage 1** | **Productivity Assembly** | Homepage displays 4 floating, scattered puzzle quadrants with ghosted previews. As each vertical succeeds, its quadrant smoothly snaps into place revealing scenic SVG artwork slices. | **+250 XP** per vertical (1,000 XP max per cycle). |
+| **Stage 2** | **Manual Puzzle Challenge** | Unlocked **only** when all 4 tasks are complete (100%). Users solve an interactive 3x3 sliding tile puzzle reconstructing the master artwork. | Move counter, timer, confetti celebration, and cycle restart option. |
 
 ---
 
@@ -103,7 +103,7 @@ Every knowledge worker procrastinates on repetitive, high-friction digital maint
   - Emerald Confirmation: `#10B981`
 - **Backend**: Next.js Serverless Route Handlers, Node.js v22.
 - **Shared AI Service**: Google Gemini API (`@google/generative-ai`) and Groq (`groq-sdk`) with structured JSON validation and prompt injection sanitization.
-- **Integrations**: `googleapis` (Gmail API v1, Google Sheets API v4), `jszip`.
+- **Integrations**: `googleapis` (Gmail API v1, Google Sheets API v4), `jszip`, `whatsapp.ts`.
 - **Target Deployment**: Google Cloud Run (multi-stage Docker container).
 
 ---
@@ -161,15 +161,23 @@ Visit [http://localhost:3000](http://localhost:3000) in your browser.
 
 ## 8. Testing & Validation
 
+PromptWars includes both automated API integration tests and automated headless Chrome browser tests:
+
 ```bash
-# Type check TypeScript codebase
+# 1. Run full API integration test suite (33 assertions across 7 modules)
+npm test
+
+# 2. Run automated headless Chrome browser test (captures screenshots of all 5 views)
+npm run test:browser
+
+# 3. Run all tests simultaneously
+npm run test:all
+
+# 4. Type check TypeScript codebase
 npx tsc --noEmit
 
-# Production build check (standalone traces)
+# 5. Production build check (standalone traces)
 npm run build
-
-# Test health check endpoint
-curl http://localhost:3000/api/health
 ```
 
 ---
@@ -210,10 +218,10 @@ gcloud run deploy promptwars \
 
 - [x] Responsive, professional Nualt-inspired UI (#0755B5, #F4F2E8).
 - [x] Four functional productivity verticals with real-world background execution.
-- [x] Deterministic XP & Stage 1 automatic puzzle assembly.
+- [x] Deterministic XP & Stage 1 automatic puzzle assembly with visual artwork.
 - [x] Stage 2 manual interactive puzzle challenge unlocked after 4/4 completion.
 - [x] Shared AI client with Google Gemini & Groq fallback adapters.
 - [x] Shared Google Sheets & Gmail API integration layer.
 - [x] Production Dockerfile and `/api/health` monitoring ready for Google Cloud Run.
-- [x] Repository footprint well under 10MB.
-
+- [x] Automated Unit/API and Headless Chrome E2E test suites included.
+- [x] Repository footprint well under 10MB (~120 KiB).

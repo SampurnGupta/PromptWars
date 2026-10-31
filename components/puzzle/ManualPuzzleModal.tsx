@@ -22,8 +22,20 @@ interface ManualPuzzleModalProps {
   onCycleUpdate: (newState: ProductivityCycleState) => void;
 }
 
-// 3x3 puzzle representation (9 tiles total, numbered 1 through 8, with 0 as blank)
+// 3x3 puzzle representation (9 tiles: 1-8, with 0 as blank)
 const SOLVED_GRID = [1, 2, 3, 4, 5, 6, 7, 8, 0];
+
+// Map tile number (1-8) to artwork background coordinates
+const TILE_POSITIONS: Record<number, string> = {
+  1: "0% 0%",
+  2: "50% 0%",
+  3: "100% 0%",
+  4: "0% 50%",
+  5: "50% 50%",
+  6: "100% 50%",
+  7: "0% 100%",
+  8: "50% 100%",
+};
 
 export function ManualPuzzleModal({
   isOpen,
@@ -31,19 +43,21 @@ export function ManualPuzzleModal({
   state,
   onCycleUpdate,
 }: ManualPuzzleModalProps) {
-  // Tile state
-  const [tiles, setTiles] = useState<number[]>([1, 2, 3, 4, 5, 0, 7, 8, 6]); // Solvable shuffle
+  // Tile state (solvable configuration needing a few moves)
+  const [tiles, setTiles] = useState<number[]>([1, 2, 3, 4, 0, 5, 7, 8, 6]);
   const [moves, setMoves] = useState(0);
   const [seconds, setSeconds] = useState(0);
   const [isActive, setIsActive] = useState(false);
   const [isSolved, setIsSolved] = useState(false);
   const [showReference, setShowReference] = useState(false);
 
-  // Initialize or shuffle
+  const activeArtworkUrl = state.activeArtworkId === "golden_hour_fjord"
+    ? "/puzzles/golden_hour_fjord.svg"
+    : "/puzzles/alpine_sanctuary.svg";
+
   const initPuzzle = () => {
-    // Solvable configuration requiring a few moves
-    const initialConfig = [1, 2, 3, 4, 0, 5, 7, 8, 6];
-    setTiles(initialConfig);
+    // Solvable configuration
+    setTiles([1, 2, 3, 4, 0, 5, 7, 8, 6]);
     setMoves(0);
     setSeconds(0);
     setIsActive(true);
@@ -58,7 +72,6 @@ export function ManualPuzzleModal({
     }
   }, [isOpen]);
 
-  // Timer tick
   useEffect(() => {
     let interval: NodeJS.Timeout | null = null;
     if (isActive && !isSolved) {
@@ -78,8 +91,8 @@ export function ManualPuzzleModal({
       setIsActive(false);
       try {
         confetti({
-          particleCount: 120,
-          spread: 70,
+          particleCount: 150,
+          spread: 80,
           origin: { y: 0.6 },
         });
       } catch (e) {
@@ -98,7 +111,6 @@ export function ManualPuzzleModal({
     const blankRow = Math.floor(blankIndex / 3);
     const blankCol = blankIndex % 3;
 
-    // Check if adjacent (same row and col diff 1, or same col and row diff 1)
     const isAdjacent =
       (row === blankRow && Math.abs(col - blankCol) === 1) ||
       (col === blankCol && Math.abs(row - blankRow) === 1);
@@ -116,17 +128,17 @@ export function ManualPuzzleModal({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
       <div className="bg-parchment-card border border-parchment-border rounded-2xl w-full max-w-lg shadow-floating overflow-hidden flex flex-col">
-        {/* Header */}
+        {/* Modal Header */}
         <div className="px-6 py-4 border-b border-parchment-border flex items-center justify-between bg-parchment-surface">
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-lg bg-cobalt text-white flex items-center justify-center font-bold text-sm">
               <Trophy className="w-4 h-4 text-amber-300" />
             </div>
             <div>
-              <h2 className="text-base font-bold text-slate-text">Stage 2 • Manual Puzzle Reward</h2>
-              <p className="text-[11px] text-slate-muted">You earned this! Slide the tiles to complete the image</p>
+              <h2 className="text-base font-bold text-slate-text">Stage 2 • Master Puzzle Reward</h2>
+              <p className="text-[11px] text-slate-muted">Slide image tiles to reconstruct the scenic master artwork</p>
             </div>
           </div>
           <button
@@ -137,11 +149,11 @@ export function ManualPuzzleModal({
           </button>
         </div>
 
-        {/* Status Bar: Moves, Timer, Reference Toggle */}
+        {/* Status Bar */}
         <div className="px-6 py-3 bg-parchment border-b border-parchment-border flex items-center justify-between text-xs font-mono">
           <div className="flex items-center gap-4">
             <span className="text-slate-text font-semibold">
-              Moves: <span className="text-cobalt">{moves}</span>
+              Moves: <span className="text-cobalt font-bold">{moves}</span>
             </span>
             <span className="flex items-center gap-1 text-slate-text font-semibold">
               <Clock className="w-3.5 h-3.5 text-slate-muted" />
@@ -151,38 +163,36 @@ export function ManualPuzzleModal({
           <div className="flex items-center gap-2">
             <button
               onClick={() => setShowReference(!showReference)}
-              className="flex items-center gap-1 text-[11px] text-cobalt hover:underline"
+              className="flex items-center gap-1 text-[11px] text-cobalt hover:underline font-semibold"
             >
               {showReference ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
-              <span>{showReference ? "Hide Goal" : "Show Goal"}</span>
+              <span>{showReference ? "Hide Reference" : "View Reference"}</span>
             </button>
             <button
               onClick={initPuzzle}
               title="Restart Shuffle"
-              className="p-1 rounded text-slate-muted hover:text-cobalt"
+              className="p-1 rounded text-slate-muted hover:text-cobalt hover:bg-parchment-border/50"
             >
               <RotateCcw className="w-3.5 h-3.5" />
             </button>
           </div>
         </div>
 
-        {/* Puzzle Board Area */}
+        {/* Puzzle Board */}
         <div className="p-6 flex flex-col items-center justify-center">
           {showReference ? (
-            <div className="w-72 h-72 rounded-xl bg-cobalt/10 border-2 border-cobalt grid grid-cols-3 grid-rows-3 gap-1 p-2 mb-4 animate-fade-in">
-              {SOLVED_GRID.map((num, i) => (
-                <div
-                  key={i}
-                  className={`rounded flex items-center justify-center font-bold text-sm ${
-                    num === 0 ? "bg-transparent" : "bg-cobalt text-white shadow-sm"
-                  }`}
-                >
-                  {num !== 0 && `Tile ${num}`}
-                </div>
-              ))}
+            <div className="w-80 h-80 rounded-xl overflow-hidden border-2 border-cobalt shadow-card relative animate-fade-in">
+              <img
+                src={activeArtworkUrl}
+                alt="Goal Reference"
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute bottom-2 left-2 right-2 bg-black/70 backdrop-blur-md text-white text-[10px] text-center py-1 rounded font-mono">
+                Target Assembly Goal
+              </div>
             </div>
           ) : (
-            <div className="w-72 h-72 bg-parchment-border/50 rounded-xl p-2 grid grid-cols-3 grid-rows-3 gap-2 border border-parchment-border shadow-inner">
+            <div className="w-80 h-80 bg-slate-900 rounded-xl p-2 grid grid-cols-3 grid-rows-3 gap-1.5 border-2 border-parchment-border shadow-inner">
               {tiles.map((tileNumber, index) => {
                 const isBlank = tileNumber === 0;
                 return (
@@ -190,17 +200,25 @@ export function ManualPuzzleModal({
                     key={index}
                     disabled={isBlank || isSolved}
                     onClick={() => handleTileClick(index)}
-                    className={`rounded-lg font-bold text-lg transition-all duration-150 flex items-center justify-center ${
+                    className={`rounded-lg relative overflow-hidden transition-all duration-150 flex items-center justify-center group ${
                       isBlank
-                        ? "bg-transparent border border-dashed border-cobalt/30"
-                        : "bg-gradient-to-br from-cobalt to-cobalt-hover text-white shadow-card hover:scale-[1.02] active:scale-95"
+                        ? "bg-slate-950/40 border border-dashed border-slate-700"
+                        : "border border-white/20 shadow-md hover:scale-[1.02] active:scale-95"
                     }`}
+                    style={
+                      !isBlank
+                        ? {
+                            backgroundImage: `url('${activeArtworkUrl}')`,
+                            backgroundSize: "300% 300%",
+                            backgroundPosition: TILE_POSITIONS[tileNumber],
+                          }
+                        : {}
+                    }
                   >
                     {!isBlank && (
-                      <div className="flex flex-col items-center">
-                        <span className="text-base">{tileNumber}</span>
-                        <span className="text-[9px] uppercase tracking-wider text-cobalt-light font-normal">Piece</span>
-                      </div>
+                      <span className="absolute top-1 left-1 bg-black/60 backdrop-blur-sm text-white text-[9px] font-mono font-bold px-1.5 py-0.5 rounded opacity-75 group-hover:opacity-100">
+                        {tileNumber}
+                      </span>
                     )}
                   </button>
                 );
@@ -243,4 +261,3 @@ export function ManualPuzzleModal({
     </div>
   );
 }
-

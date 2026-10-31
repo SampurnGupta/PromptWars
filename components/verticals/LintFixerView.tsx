@@ -14,7 +14,8 @@ import {
   FileCode,
   ArrowRight,
   GitCompare,
-  Terminal
+  Terminal,
+  Plus
 } from "lucide-react";
 import { loadLocalGamificationState, recordVerticalCompletion } from "@/lib/gamification/engine";
 import { ProductivityCycleState, INITIAL_CYCLE_STATE } from "@/lib/gamification/types";
@@ -63,6 +64,33 @@ export function LintFixerView() {
   useEffect(() => {
     setGamificationState(loadLocalGamificationState());
   }, []);
+
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const uploadedFiles = e.target.files;
+    if (!uploadedFiles || uploadedFiles.length === 0) return;
+
+    const newFiles: CodeFile[] = [];
+    let readCount = 0;
+
+    for (let i = 0; i < uploadedFiles.length; i++) {
+      const f = uploadedFiles[i];
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const text = event.target?.result as string;
+        newFiles.push({
+          path: f.name,
+          content: text,
+        });
+        readCount++;
+        if (readCount === uploadedFiles.length) {
+          setFiles((prev) => [...newFiles, ...prev]);
+          setStatusMessage(`Uploaded ${newFiles.length} local files for lint inspection.`);
+          setActiveTab("manual");
+        }
+      };
+      reader.readAsText(f);
+    }
+  };
 
   const handleFetchGithub = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -183,7 +211,7 @@ export function LintFixerView() {
             AI-Powered Lint &amp; Code Repair
           </h1>
           <p className="text-sm text-slate-muted mt-1">
-            End tedious syntax fixing. Ingest GitHub repositories or code snippets to auto-repair lint warnings with clean diffs.
+            End tedious syntax fixing. Ingest GitHub repositories or upload local files to auto-repair lint warnings with clean diffs.
           </p>
         </div>
 
@@ -211,30 +239,50 @@ export function LintFixerView() {
         </div>
       )}
 
-      {/* Tabs: Public GitHub URL vs Sample / Upload */}
-      <div className="flex items-center gap-2 mb-6">
-        <button
-          onClick={() => setActiveTab("github")}
-          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
-            activeTab === "github"
-              ? "bg-cobalt text-white shadow-sm"
-              : "bg-white border border-parchment-border text-slate-text hover:bg-parchment-surface"
-          }`}
-        >
-          <Github className="w-4 h-4" />
-          <span>Public GitHub Repo</span>
-        </button>
-        <button
-          onClick={() => setActiveTab("manual")}
-          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
-            activeTab === "manual"
-              ? "bg-cobalt text-white shadow-sm"
-              : "bg-white border border-parchment-border text-slate-text hover:bg-parchment-surface"
-          }`}
-        >
-          <FileCode className="w-4 h-4" />
-          <span>Active Code Files ({files.length})</span>
-        </button>
+      {/* Tabs & Upload Button */}
+      <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setActiveTab("github")}
+            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+              activeTab === "github"
+                ? "bg-cobalt text-white shadow-sm"
+                : "bg-white border border-parchment-border text-slate-text hover:bg-parchment-surface"
+            }`}
+          >
+            <Github className="w-4 h-4" />
+            <span>Public GitHub Repo</span>
+          </button>
+          <button
+            onClick={() => setActiveTab("manual")}
+            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+              activeTab === "manual"
+                ? "bg-cobalt text-white shadow-sm"
+                : "bg-white border border-parchment-border text-slate-text hover:bg-parchment-surface"
+            }`}
+          >
+            <FileCode className="w-4 h-4" />
+            <span>Active Code Files ({files.length})</span>
+          </button>
+        </div>
+
+        <div>
+          <input
+            type="file"
+            multiple
+            accept=".js,.jsx,.ts,.tsx,.py,.json"
+            id="local-code-upload"
+            onChange={handleFileUpload}
+            className="hidden"
+          />
+          <label
+            htmlFor="local-code-upload"
+            className="cursor-pointer inline-flex items-center gap-1.5 bg-white border border-parchment-border hover:border-cobalt hover:bg-cobalt-light/30 px-3 py-2 rounded-xl text-xs font-semibold text-cobalt transition-colors shadow-sm"
+          >
+            <Upload className="w-3.5 h-3.5" />
+            <span>Upload Local Code Files</span>
+          </label>
+        </div>
       </div>
 
       {/* GitHub URL Ingestion Input */}
@@ -413,4 +461,3 @@ export function LintFixerView() {
     </div>
   );
 }
-

@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" width="100%" height="100%">
+  <defs>
+    <linearGradient id="skyGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#052E64" />
+      <stop offset="40%" stop-color="#0755B5" />
+      <stop offset="70%" stop-color="#3B82F6" />
+      <stop offset="90%" stop-color="#FDE68A" />
+      <stop offset="100%" stop-color="#F59E0B" />
+    </linearGradient>
+    <linearGradient id="peakGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="40%" stop-color="#CBD5E1" />
+      <stop offset="100%" stop-color="#1E293B" />
+    </linearGradient>
+    <linearGradient id="peakGrad2" x1="100%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="50%" stop-color="#94A3B8" />
+      <stop offset="100%" stop-color="#0F172A" />
+    </linearGradient>
+    <linearGradient id="lakeGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#0E7490" />
+      <stop offset="30%" stop-color="#0755B5" />
+      <stop offset="100%" stop-color="#0A1E3F" />
+    </linearGradient>
+    <linearGradient id="sunGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FEF08A" />
+      <stop offset="100%" stop-color="#F59E0B" />
+    </linearGradient>
+  </defs>
+
+  <!-- Sky -->
+  <rect x="0" y="0" width="600" height="420" fill="url(#skyGrad)" />
+
+  <!-- Morning Sun -->
+  <circle cx="300" cy="220" r="65" fill="url(#sunGrad)" opacity="0.9" filter="drop-shadow(0 0 25px #FDE68A)" />
+
+  <!-- Distant Mountain Ranges -->
+  <polygon points="50,420 180,240 310,420" fill="#1E3A8A" opacity="0.5" />
+  <polygon points="260,420 400,210 540,420" fill="#1E3A8A" opacity="0.5" />
+
+  <!-- Majestic Central Peak -->
+  <!-- Left Face -->
+  <polygon points="120,420 300,140 300,420" fill="url(#peakGrad1)" />
+  <!-- Right Face -->
+  <polygon points="300,140 480,420 300,420" fill="url(#peakGrad2)" />
+  <!-- Snowcap Top -->
+  <polygon points="260,200 300,140 340,200 320,215 300,205 280,215" fill="#FFFFFF" />
+
+  <!-- Secondary Fore Mountains -->
+  <polygon points="0,420 120,290 260,420" fill="#1E293B" />
+  <polygon points="340,420 480,270 600,420" fill="#0F172A" />
+
+  <!-- Pristine Lake -->
+  <rect x="0" y="420" width="600" height="180" fill="url(#lakeGrad)" />
+
+  <!-- Mountain Reflection in Lake -->
+  <polygon points="160,420 300,530 440,420" fill="#052E64" opacity="0.6" />
+  <polygon points="280,420 300,480 320,420" fill="#FFFFFF" opacity="0.4" />
+
+  <!-- Minimalist Water Ripples -->
+  <line x1="80" y1="450" x2="220" y2="450" stroke="#67E8F9" stroke-width="1.5" opacity="0.5" stroke-dasharray="8 6" />
+  <line x1="280" y1="465" x2="420" y2="465" stroke="#FDE68A" stroke-width="1.5" opacity="0.6" stroke-dasharray="12 8" />
+  <line x1="160" y1="500" x2="340" y2="500" stroke="#67E8F9" stroke-width="2" opacity="0.4" stroke-dasharray="16 10" />
+  <line x1="240" y1="540" x2="480" y2="540" stroke="#38BDF8" stroke-width="1.5" opacity="0.3" stroke-dasharray="10 8" />
+
+  <!-- Pine Tree Silhouettes on Shoreline -->
+  <polygon points="40,420 48,395 56,420" fill="#0F172A" />
+  <polygon points="46,420 54,385 62,420" fill="#0F172A" />
+  <polygon points="530,420 538,390 546,420" fill="#0F172A" />
+  <polygon points="540,420 550,380 560,420" fill="#0F172A" />
+
+  <!-- Elegant Typography Overlay -->
+  <rect x="130" y="555" width="340" height="32" rx="16" fill="#0F172A" opacity="0.75" />
+  <text x="300" y="576" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif" font-size="12" font-weight="700" fill="#F4F2E8" letter-spacing="3">
+    ALPINE SANCTUARY • FOCUS &amp; HARMONY
+  </text>
+</svg>
+
