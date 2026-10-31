@@ -216,3 +216,4 @@ gcloud run deploy promptwars \
 - [x] Shared Google Sheets & Gmail API integration layer.
 - [x] Production Dockerfile and `/api/health` monitoring ready for Google Cloud Run.
 - [x] Repository footprint well under 10MB.
+
