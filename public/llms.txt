@@ -45,3 +45,4 @@ ChoreCraft eliminates procrastination by replacing chore friction with game-loop
 - `POST /api/lint/analyze`: Detect syntax, type, and style lint issues.
 - `POST /api/lint/fix`: Repair detected lint issues with unified diffs.
 - `POST /api/lint/github`: Ingest public GitHub repository code with SSRF protection.
+

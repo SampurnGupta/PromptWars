@@ -48,3 +48,4 @@ API_Tests: 41 passed, 0 failed (node scripts/test-api.mjs)
 Browser_E2E_Tests: 5/5 views verified with screenshots (node scripts/test-browser.mjs)
 Full_Cycle_Walkthrough: 7-step complete end-to-end lifecycle verified (node scripts/test-full-cycle.mjs)
 Loader_Verification: First-visit detection and reload suppression verified (node scripts/test-loader.mjs)
+

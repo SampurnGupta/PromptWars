@@ -101,3 +101,4 @@ The platform exposes dedicated endpoints conforming to emerging AI evaluation st
 2. **SSRF Guard on GitHub Ingestion**: URL inputs are validated; requests resolving to `localhost`, `127.0.0.1`, RFC 1918 private subnets (`10.0.0.0/8`, `172.16.0.0/12`, `192.168.0.0/16`), or cloud metadata IPs (`169.254.169.254`) are immediately rejected with HTTP 400.
 3. **Prompt Injection Sanitization**: External inputs pass through `sanitizeUntrustedInput()` neutralizing delimiter break attempts (`` ``` ``) and simulated `<system>` overrides.
 4. **Lightweight Repository**: Git-tracked size is ~250 KiB (excluding node_modules and builds), well beneath the 10 MB hackathon threshold.
+

@@ -43,3 +43,4 @@ ChoreCraft transforms tedious digital maintenance into an engaging, interactive 
 - 5 headless Chrome browser visual screenshot tests passing (`npm run test:browser`).
 - 7-step full cycle end-to-end automation test passing (`npm run test:cycle`).
 - Initial product loader verification passing (`node scripts/test-loader.mjs`).
+
