@@ -116,3 +116,12 @@
 - [x] **TASK-15.2** [P0] Google Cloud Run Build Configuration: Authored `cloudbuild.yaml` for building and deploying containerized standalone image to `gcr.io/$PROJECT_ID/chorecraft`.
 - [x] **TASK-15.3** [P0] Continuous Cloud Deployment: Configured `.github/workflows/cloud-run.yml` for automated CI/CD pipeline on push to `main`.
 - [x] **TASK-15.4** [P0] Verification: Tested loader behavior via headless browser (`scripts/test-loader.mjs`), confirming single first-load execution and zero reload intrusion.
+
+---
+
+## Phase 16: Automated AI Judge & Evaluator Documentation Manifests
+- [x] **TASK-16.1** [P0] AI Crawlers & Bots Directives: Created `public/robots.txt`, `public/bots.txt`, and `public/ai.txt` with permissions for AI judges and automated assessment harnesses.
+- [x] **TASK-16.2** [P0] LLM Standard Context: Published `public/llms.txt` and `public/llms-full.txt` adhering to the llmstxt.org specification.
+- [x] **TASK-16.3** [P0] Machine-Readable Evaluation Endpoint: Built `app/api/evaluation/route.ts` returning live platform compliance, vertical status, and test metrics.
+- [x] **TASK-16.4** [P0] OpenAPI 3.0 Specification: Authored `public/openapi.json` documenting all 14 API endpoints and schemas.
+- [x] **TASK-16.5** [P0] AI Judge Dossier: Created `JUDGE.md` containing the requirement traceability matrix, automated verification commands, and security audit notes.

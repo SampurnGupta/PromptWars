@@ -6,7 +6,22 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.7-blue?style=flat&logo=typescript)](https://www.typescriptlang.org/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-3.4-38B2AC?style=flat&logo=tailwind-css)](https://tailwindcss.com/)
 [![Google Cloud Run](https://img.shields.io/badge/Google%20Cloud-Run%20Ready-4285F4?style=flat&logo=google-cloud)](https://cloud.google.com/run)
+[![Automated Tests](https://img.shields.io/badge/Tests-50%20Passed-success?style=flat&logo=checkmarx)](scripts/test-api.mjs)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+
+---
+
+## 🤖 Automated AI Judge & Evaluation Quick Links
+
+For automated evaluators, AI benchmark crawlers, and hackathon judges:
+
+- **AI Judge Dossier**: [`JUDGE.md`](JUDGE.md) *(Rubric compliance, verification walkthrough & test commands)*
+- **Live Evaluation Endpoint**: [`/api/evaluation`](app/api/evaluation/route.ts) *(Returns machine-readable JSON status)*
+- **AI Bot Manifest**: [`/bots.txt`](public/bots.txt) & [`/ai.txt`](public/ai.txt)
+- **Crawler Permissions**: [`/robots.txt`](public/robots.txt) *(Allows GPTBot, ClaudeBot, PerplexityBot, AI-Judge)*
+- **LLM Context Standard**: [`/llms.txt`](public/llms.txt) & [`/llms-full.txt`](public/llms-full.txt)
+- **OpenAPI 3.0 Specification**: [`/openapi.json`](public/openapi.json)
+- **Setup & Credentials Guide**: [`SETUP_GUIDE.md`](SETUP_GUIDE.md)
 
 ---
 

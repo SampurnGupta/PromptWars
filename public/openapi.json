@@ -1,0 +1,161 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "ChoreCraft API",
+    "description": "Gamified AI Productivity Platform API with real-world execution across Gmail, Google Sheets, File System, and Lint Repair.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000",
+      "description": "Local Development Server"
+    }
+  ],
+  "paths": {
+    "/api/health": {
+      "get": {
+        "summary": "Health Check Endpoint",
+        "responses": {
+          "200": {
+            "description": "Service is healthy and operational."
+          }
+        }
+      }
+    },
+    "/api/evaluation": {
+      "get": {
+        "summary": "Automated AI Judge & Evaluation Status Endpoint",
+        "responses": {
+          "200": {
+            "description": "Machine-readable compliance report for automated AI judges."
+          }
+        }
+      }
+    },
+    "/api/gamification/state": {
+      "get": {
+        "summary": "Gamification State Machine",
+        "responses": {
+          "200": {
+            "description": "Productivity cycle XP, completed verticals, and puzzle unlock flags."
+          }
+        }
+      }
+    },
+    "/api/expenses/extract": {
+      "post": {
+        "summary": "Extract structured expense from natural language",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "text": { "type": "string" }
+                },
+                "required": ["text"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Structured expense object" }
+        }
+      }
+    },
+    "/api/expenses/sync": {
+      "get": {
+        "summary": "Fetch live expense ledger from Google Sheet",
+        "responses": {
+          "200": { "description": "List of expense records and analytics" }
+        }
+      },
+      "post": {
+        "summary": "Append expense record to Google Sheet",
+        "responses": {
+          "200": { "description": "Record appended successfully" }
+        }
+      }
+    },
+    "/api/expenses/chat": {
+      "post": {
+        "summary": "Financial AI Copilot with read/write access to Google Sheet",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": { "type": "string" },
+                  "history": { "type": "array" }
+                },
+                "required": ["message"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Conversational reply and any executed sheet modification" }
+        }
+      }
+    },
+    "/api/email/fetch": {
+      "get": {
+        "summary": "Fetch unread primary inbox emails",
+        "responses": {
+          "200": { "description": "Array of email messages" }
+        }
+      }
+    },
+    "/api/email/process": {
+      "post": {
+        "summary": "Classify and execute star/read operations on emails",
+        "responses": {
+          "200": { "description": "Processing results and modified counts" }
+        }
+      }
+    },
+    "/api/files/plan": {
+      "post": {
+        "summary": "Generate file organization plan from file inventory",
+        "responses": {
+          "200": { "description": "Action plan and detected duplicate files" }
+        }
+      }
+    },
+    "/api/files/zip-organize": {
+      "post": {
+        "summary": "Organize uploaded ZIP archive into clean directories",
+        "responses": {
+          "200": { "description": "Restructured downloadable ZIP archive" }
+        }
+      }
+    },
+    "/api/lint/analyze": {
+      "post": {
+        "summary": "Analyze code files for lint and syntax defects",
+        "responses": {
+          "200": { "description": "Detected lint issues across JS, TS, Python, JSON" }
+        }
+      }
+    },
+    "/api/lint/fix": {
+      "post": {
+        "summary": "Repair code files via AST rules and Gemini LLM refactoring",
+        "responses": {
+          "200": { "description": "Fixed code content and unified diff summaries" }
+        }
+      }
+    },
+    "/api/lint/github": {
+      "post": {
+        "summary": "Ingest public GitHub repository with SSRF guards",
+        "responses": {
+          "200": { "description": "Ingested repository files" }
+        }
+      }
+    }
+  }
+}

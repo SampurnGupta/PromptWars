@@ -193,6 +193,24 @@ async function runTests() {
     assert(false, `Chatbot test failed: ${err.message}`);
   }
 
+  // 9. Automated AI Judge & Evaluation Endpoint
+  console.log(`\n[Test 9] Automated AI Judge Evaluation Endpoint (/api/evaluation)`);
+  try {
+    const evalRes = await fetch(`${BASE_URL}/api/evaluation`);
+    assert(evalRes.status === 200, "Evaluation endpoint status is 200 OK");
+    const evalJson = await evalRes.json();
+    assert(evalJson.platform === "ChoreCraft (PromptWars)", "Platform name matches");
+    assert(evalJson.status === "healthy", "Evaluation status is healthy");
+    assert(evalJson.deployment.target === "Google Cloud Run", "Deployment target is Google Cloud Run");
+    assert(Boolean(evalJson.productivity_verticals.email_management), "Email vertical documented");
+    assert(Boolean(evalJson.productivity_verticals.expense_tracking), "Expense vertical documented");
+    assert(Boolean(evalJson.productivity_verticals.file_organization), "File vertical documented");
+    assert(Boolean(evalJson.productivity_verticals.lint_fixing), "Lint vertical documented");
+    assert(evalJson.documentation.judge_guide === "/JUDGE.md", "Judge guide linked");
+  } catch (err) {
+    assert(false, `Evaluation endpoint test failed: ${err.message}`);
+  }
+
   console.log(`\n======================================================`);
   console.log(` Test Summary: ${passedCount} Passed, ${failedCount} Failed`);
   console.log(`======================================================\n`);

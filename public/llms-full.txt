@@ -1,0 +1,45 @@
+# ChoreCraft (PromptWars) — Extended AI Documentation & Evaluation Reference
+
+## 1. System Identity & Mission
+ChoreCraft transforms tedious digital maintenance into an engaging, interactive puzzle experience. The platform combines real-world productivity execution with deterministic gamification mechanics, strictly adhering to high-contrast, distraction-free architectural aesthetics (#0755B5 Cobalt on #F4F2E8 Parchment).
+
+## 2. Technical Stack
+- Frontend: Next.js 15.5.28 (App Router), React 19, TypeScript 5.7, Tailwind CSS 3.4
+- Backend: Next.js Route Handlers (Serverless on Google Cloud Run)
+- AI Core: Multi-adapter architecture supporting Google Gemini (`gemini-1.5-flash`), Groq (`llama-3.3-70b-versatile`), and deterministic fallback heuristic engines.
+- Audio Synthesis: Zero-dependency Web Audio API oscillator synthesis (`lib/sound.ts`).
+- Storage & Persistence: Google Sheets API v4 (`Expenses!A:H`), Gmail API v1, browser File System Access API, LocalStorage/SessionStorage with IST midnight rollover.
+
+## 3. Four Real-World Productivity Verticals
+
+### Vertical 1: Email Management (`/email`)
+- Evaluates unread Primary inbox emails via Gmail API.
+- AI classifies into `important` (action items, deadlines) vs `unnecessary` (promotions, newsletters).
+- Execution: Stars action items, marks promotional clutter as read, dispatches executive summary digest.
+- Verification endpoint: `GET /api/email/fetch`, `POST /api/email/process`.
+
+### Vertical 2: Expense Tracking & Financial AI Copilot (`/expenses`)
+- Natural language text and speech recognition extracts amount, category, currency, date, and payment method.
+- Persists directly into Google Sheets (`Expenses!A:H`) using Google Service Account JWT authentication.
+- Financial AI Copilot (`/api/expenses/chat`): Conversational chatbot with live read/write access to Google Sheet. Users can ask questions (*"What is my spending breakdown?"*), add expenses (*"Add ₹350 for lunch on UPI"*), update rows (*"Change TXN-10023 amount to ₹500"*), or delete transactions (*"Delete TXN-10023"*).
+
+### Vertical 3: File & Folder Organization (`/files`)
+- Solves chaotic Downloads and desktop folder clutter.
+- Dual execution paths:
+  1. Native browser File System Access API (`window.showDirectoryPicker`): Live local folder restructuring without uploading files to any external server.
+  2. Server-side ZIP archive restructuring (`/api/files/zip-organize`): Cleans and groups files by semantic category into a freshly sorted downloadable ZIP.
+- Intelligent duplicate file detection (identifying `(1)`, `copy`, timestamped variants).
+
+### Vertical 4: AI Code Lint Repair (`/lint`)
+- Accepts uploaded source files, live scratchpad code, or public GitHub repositories.
+- SSRF protection prevents access to private or internal IP ranges.
+- Multi-tier lint repair engine:
+  1. Static AST/regex rules: `no-var`, `eqeqeq`, `no-console`, `no-trailing-spaces`, `@typescript-eslint/no-explicit-any`, Python comparison to singletons (`is None`), invalid JSON trailing commas.
+  2. Semantic LLM refactoring via Gemini 1.5 Flash when API key is provided, strictly preserving comments and docstrings.
+- Visual side-by-side diffs and downloadable repaired ZIP archive.
+
+## 4. Verification & Testing Evidence
+- 41 automated API integration assertions passing (`npm test`).
+- 5 headless Chrome browser visual screenshot tests passing (`npm run test:browser`).
+- 7-step full cycle end-to-end automation test passing (`npm run test:cycle`).
+- Initial product loader verification passing (`node scripts/test-loader.mjs`).

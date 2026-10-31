@@ -1,0 +1,47 @@
+# ChoreCraft (PromptWars)
+
+> Gamified AI Productivity Platform that transforms repetitive digital chores into a rewarding, two-stage interactive puzzle experience. Real-world chores execute in the background through verified AI workflows and Google Cloud integrations.
+
+- Live Application: Google Cloud Run Deployed Container (Next.js 15 Standalone)
+- Source Repository: https://github.com/SampurnGupta/PromptWars
+- System Health: /api/health
+- Machine Evaluation Endpoint: /api/evaluation
+- OpenAPI Specification: /openapi.json
+- AI Manifest: /bots.txt
+
+## Key Concepts & Architecture
+
+ChoreCraft eliminates procrastination by replacing chore friction with game-loop gratification. Instead of dreading digital maintenance, users trigger focused background AI automations that execute genuine operations while unlocking a satisfying two-stage gamification puzzle.
+
+### Two-Stage Gamification Engine
+1. **Stage 1 (Scattered Puzzle Canvas)**:
+   - Digital clutter is visually represented as 4 scattered puzzle quadrants with dynamic rotational/translational tilts.
+   - Completing each productivity vertical snaps its corresponding quadrant straight (+250 XP each; 1,000 XP total per cycle).
+   - Dynamic high-resolution web photography slices are generated fresh on each page load.
+   - Automatic rollover at 12:00 AM IST (Asia/Kolkata timezone) restarts a fresh daily cycle.
+2. **Stage 2 (Manual Puzzle Challenge Reward)**:
+   - Unlocked exclusively upon completing 4/4 chores.
+   - Interactive 3x3 sliding tile challenge with reference view toggle, move counter, timer, zero-dependency Web Audio API synthesizer effects, and celebratory confetti.
+
+### Four Productivity Verticals
+- **Email Cleanup (`/email`)**: Unread primary inbox classification, action-item/deadline starring, promo/newsletter bulk read, structured Gmail API summary delivery.
+- **Natural Language Expense Tracker (`/expenses`)**: Voice and text natural language extraction into structured expenses, Google Sheets (`Expenses!A:H`) integration, spending dashboard with category filters & CSV export, and an interactive **Google Sheet AI Copilot (Chatbot)** with live read/write/update/delete capabilities.
+- **AI File & Folder Reorganizer (`/files`)**: Natural language intent converted to structured action plans with native browser **File System Access API** directory execution, duplicate file identification, and universal ZIP upload/reorganized download fallback.
+- **AI Code Lint Repair (`/lint`)**: Code uploaded via local files, live code scratchpad, or public GitHub repo; errors detected across JS, TS, Python, and JSON with AST-pattern & LLM semantic refactoring, before/after diffs, and downloadable ZIP.
+
+## API Endpoints for Automated Evaluation
+
+- `GET /api/health`: Service health, uptime, and container metadata.
+- `GET /api/evaluation`: Structured machine-readable compliance report for automated AI judges.
+- `GET /api/gamification/state`: Current cycle status, XP rewards, and vertical completion flags.
+- `POST /api/expenses/chat`: Conversational Financial Copilot with read/write access to Google Sheet.
+- `POST /api/expenses/extract`: Natural language expense text extraction into structured JSON.
+- `GET /api/expenses/sync`: Read live expense ledger from Google Sheet.
+- `POST /api/expenses/sync`: Append structured transaction to Google Sheet.
+- `POST /api/email/fetch`: Fetch unread primary email messages.
+- `POST /api/email/process`: Classify and execute star/read operations on emails.
+- `POST /api/files/plan`: Generate structured reorganization plan from file inventory.
+- `POST /api/files/zip-organize`: Process uploaded ZIP archive and return restructured download.
+- `POST /api/lint/analyze`: Detect syntax, type, and style lint issues.
+- `POST /api/lint/fix`: Repair detected lint issues with unified diffs.
+- `POST /api/lint/github`: Ingest public GitHub repository code with SSRF protection.

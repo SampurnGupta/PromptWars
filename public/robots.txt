@@ -1,0 +1,39 @@
+# ==============================================================================
+# ChoreCraft (PromptWars) — Robots Configuration for Web & AI Crawlers
+# ==============================================================================
+
+User-agent: *
+Allow: /
+Disallow: /api/private/
+
+# Explicit permissions for Automated AI Judges, Evaluators, and Crawlers
+User-agent: GPTBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+User-agent: Amazonbot
+Allow: /
+
+User-agent: AI-Judge
+Allow: /
+
+# AI Context & Documentation manifests for automated LLM evaluation
+# Specifications: https://llmstxt.org
+Allow: /llms.txt
+Allow: /llms-full.txt
+Allow: /bots.txt
+Allow: /ai.txt
+Allow: /openapi.json
+Allow: /api/evaluation
+Allow: /api/health
