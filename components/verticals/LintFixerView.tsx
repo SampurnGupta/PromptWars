@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import { loadLocalGamificationState, recordVerticalCompletion } from "@/lib/gamification/engine";
 import { ProductivityCycleState, INITIAL_CYCLE_STATE } from "@/lib/gamification/types";
+import { playChoreSnapSound } from "@/lib/sound";
 
 interface CodeFile {
   path: string;
@@ -42,7 +43,9 @@ interface FixResult {
 }
 
 export function LintFixerView() {
-  const [activeTab, setActiveTab] = useState<"github" | "manual">("github");
+  const [activeTab, setActiveTab] = useState<"github" | "manual" | "scratchpad">("github");
+  const [scratchCode, setScratchCode] = useState(`var total = 0;\nfunction calculateDiscount(price) {\n  if (price == 0) {\n    console.log("Zero price detected");   \n    return 0;\n  }\n  var discount = price * 0.15;\n  return price - discount;\n}\n`);
+  const [scratchFilename, setScratchFilename] = useState("scratchpad.js");
   const [repoUrl, setRepoUrl] = useState("https://github.com/facebook/react");
   const [files, setFiles] = useState<CodeFile[]>([
     {
@@ -161,6 +164,7 @@ export function LintFixerView() {
         `Resolved ${data.totalIssuesResolved} code issues across ${data.totalFilesFixed} files.`
       );
       setGamificationState(updated.state);
+      playChoreSnapSound();
       window.dispatchEvent(new Event("gamification_updated"));
 
       setStatusMessage(`All lint issues automatically repaired! (+${updated.xpAwarded} XP)`);
@@ -264,6 +268,17 @@ export function LintFixerView() {
             <FileCode className="w-4 h-4" />
             <span>Active Code Files ({files.length})</span>
           </button>
+          <button
+            onClick={() => setActiveTab("scratchpad")}
+            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+              activeTab === "scratchpad"
+                ? "bg-cobalt text-white shadow-sm"
+                : "bg-white border border-parchment-border text-slate-text hover:bg-parchment-surface"
+            }`}
+          >
+            <Terminal className="w-4 h-4" />
+            <span>Live Scratchpad</span>
+          </button>
         </div>
 
         <div>
@@ -285,7 +300,50 @@ export function LintFixerView() {
         </div>
       </div>
 
-      {/* GitHub URL Ingestion Input */}
+      {/* Scratchpad Code Input */}
+      {activeTab === "scratchpad" && (
+        <div className="bg-parchment-card border border-parchment-border rounded-2xl p-6 shadow-subtle mb-6 animate-fade-in">
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-bold text-slate-text">Virtual File:</span>
+              <select
+                value={scratchFilename}
+                onChange={(e) => setScratchFilename(e.target.value)}
+                className="bg-white border border-parchment-border text-xs font-mono rounded-lg px-2.5 py-1 text-slate-text outline-none focus:border-cobalt"
+              >
+                <option value="scratchpad.js">scratchpad.js (JavaScript)</option>
+                <option value="scratchpad.ts">scratchpad.ts (TypeScript)</option>
+                <option value="processor.py">processor.py (Python)</option>
+                <option value="config.json">config.json (JSON)</option>
+              </select>
+            </div>
+            <button
+              type="button"
+              onClick={() => {
+                const existingIdx = files.findIndex(f => f.path === scratchFilename);
+                if (existingIdx >= 0) {
+                  const updated = [...files];
+                  updated[existingIdx].content = scratchCode;
+                  setFiles(updated);
+                } else {
+                  setFiles(prev => [{ path: scratchFilename, content: scratchCode }, ...prev]);
+                }
+                setStatusMessage(`Loaded "${scratchFilename}" into target files for scanning.`);
+              }}
+              className="text-xs font-semibold text-cobalt bg-white border border-cobalt/30 hover:bg-cobalt-light px-3 py-1.5 rounded-lg flex items-center gap-1 shadow-sm"
+            >
+              <Plus className="w-3.5 h-3.5" />
+              <span>Sync to Target Files</span>
+            </button>
+          </div>
+          <textarea
+            value={scratchCode}
+            onChange={(e) => setScratchCode(e.target.value)}
+            rows={7}
+            className="w-full rounded-xl border border-parchment-border bg-slate-900 text-emerald-400 font-mono text-xs p-4 focus:border-cobalt outline-none resize-y"
+          />
+        </div>
+      )}
       {activeTab === "github" && (
         <div className="bg-parchment-card border border-parchment-border rounded-2xl p-6 shadow-subtle mb-6">
           <form onSubmit={handleFetchGithub} className="flex flex-col sm:flex-row gap-3">

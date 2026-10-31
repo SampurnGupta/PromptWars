@@ -11,13 +11,13 @@ PromptWars transforms repetitive, high-friction digital chores into a rewarding,
 ### Core Deliverables Status
 1. **Homepage with Stage 1 Gamification**: Visual representation of digital clutter as 4 scattered puzzle quadrants; pieces assemble automatically as the user completes 4 productivity verticals (25% each, 250 XP each) revealing slices of a curated scenic master artwork. **[COMPLETED & TESTED]**
 2. **Four Productivity Verticals**:
-   - **Email Management (`/email`)**: Classify unread Primary emails in Gmail, star high-priority/action items, mark newsletters/promotions as read, send structured summary digest via Gmail API. **[COMPLETED & TESTED]**
+   - **Email Management (`/email`)**: Classify unread Primary emails in Gmail, star high-priority/action items, mark newsletters/promotions as read, send structured summary digest via Gmail API, with selective checkbox approval and email inspection modal. **[COMPLETED & TESTED]**
    - **File & Folder Organization (`/files`)**: Natural language intent converted to structured action plans with native browser **File System Access API** directory execution and universal ZIP upload/reorganized download fallback. **[COMPLETED & TESTED]**
-   - **Expense Tracking (`/expenses`)**: Natural language (text or speech) expense entry extracted into structured data and synchronized into Google Sheets with a visual spending dashboard. **[COMPLETED & TESTED]**
-   - **AI-Powered Lint Fixing (`/lint`)**: Code uploaded via local files or fetched from a public GitHub repo; errors detected and fixed by AI with before/after diffs and downloadable ZIP. **[COMPLETED & TESTED]**
-3. **Stage 2 Gamification (Final Reward)**: Upon 4/4 completion (1000 XP), a separate interactive Manual Puzzle Challenge unlocks, allowing the user to solve a shuffled scenic/typography tile puzzle with confetti celebrations and cycle reset. **[COMPLETED & TESTED]**
+   - **Expense Tracking (`/expenses`)**: Natural language (text or speech) expense entry extracted into structured data and synchronized into Google Sheets with a live spending dashboard, instant search, category filters, and CSV export. **[COMPLETED & TESTED]**
+   - **AI-Powered Lint Fixing (`/lint`)**: Code uploaded via local files, live code scratchpad, or public GitHub repo; errors detected across JS, TS, Python, and JSON, with before/after diffs and downloadable ZIP. **[COMPLETED & TESTED]**
+3. **Stage 2 Gamification (Final Reward)**: Upon 4/4 completion (1000 XP), a separate interactive Manual Puzzle Challenge unlocks, allowing the user to solve a shuffled scenic/typography tile puzzle with Web Audio API sound effects, confetti celebrations, and cycle reset. **[COMPLETED & TESTED]**
 4. **Google Cloud Run Ready Deployment**: Dockerized standalone container, `/api/health` monitoring, secure demo credentials on backend, clean responsive UI matching the requested cobalt/eggshell aesthetic (`#0755B5`, `#F4F2E8`). **[COMPLETED & TESTED]**
-5. **Stretch P2 Integrations**: WhatsApp notification dispatcher layer (`lib/integrations/whatsapp.ts`) for mobile notification delivery. **[COMPLETED & TESTED]**
+5. **Phase 12 Polish & Audio**: Zero-dependency Web Audio API synthesizer (`lib/sound.ts`) for tactile clicks, quadrant snaps, and celebration chimes with audio mute toggle in the navigation bar. **[COMPLETED & TESTED]**
 
 ---
 
@@ -32,6 +32,7 @@ PromptWars transforms repetitive, high-friction digital chores into a rewarding,
   - Border/Muted: `#E2DFD2`
   - Emerald Success: `#10B981`
 - **Icons**: Lucide React
+- **Audio**: Web Audio API oscillator synthesis (tile clicks, quadrant snapping, victory fanfare)
 - **Animations / Effects**: Canvas Confetti, CSS keyframes
 - **UI Architecture**: Component-driven, semantic HTML5, high-contrast, fully keyboard and screen-reader accessible.
 
@@ -47,11 +48,13 @@ PromptWars transforms repetitive, high-friction digital chores into a rewarding,
 
 1. **TypeScript Typecheck**:
    - `npx tsc --noEmit` -> Exited with code 0 (zero errors).
-2. **Next.js Production Build**:
-   - `npm run build` -> All 20 routes compiled successfully with standalone trace outputs in 31.6s.
+2. **Next.js Standalone Production Build**:
+   - `npm run build` -> 20 routes compiled successfully with standalone trace outputs in 39.8s.
 3. **Automated API Test Suite (`npm test`)**:
    - `node scripts/test-api.mjs` -> 33 of 33 assertions passed (Health, Expense extraction, Expense sync, Email fetch & process, File planning, Lint analyze & fix, Gamification state).
-4. **Automated Headless Chrome Browser E2E Suite (`npm run test:browser`)**:
-   - `node scripts/test-browser.mjs` -> 5 views tested via Chrome with full screenshots captured (Homepage, Expenses, Email, Files, Lint).
-5. **Git Repository Footprint**:
-   - Ultra-lightweight: ~120 KiB total tracked size (far below the 10 MB hackathon ceiling).
+4. **Automated Headless Chrome Browser Suite (`npm run test:browser`)**:
+   - `node scripts/test-browser.mjs` -> 5 views tested via Chrome with full screenshots captured.
+5. **Automated Full-Cycle Walkthrough (`npm run test:cycle`)**:
+   - `node scripts/test-full-cycle.mjs` -> Fully automated 7-step sequence executing all 4 chores, verifying 100% assembly, and capturing the unlocked Stage 2 manual puzzle challenge modal.
+6. **Git Repository Footprint**:
+   - Ultra-lightweight: ~180 KiB total tracked size (far below the 10 MB hackathon ceiling).

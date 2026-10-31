@@ -13,10 +13,14 @@ import {
   CreditCard,
   Calendar,
   Layers,
-  ArrowRight
+  ArrowRight,
+  Search,
+  Filter,
+  Download
 } from "lucide-react";
 import { loadLocalGamificationState, recordVerticalCompletion } from "@/lib/gamification/engine";
 import { ProductivityCycleState, INITIAL_CYCLE_STATE } from "@/lib/gamification/types";
+import { playChoreSnapSound } from "@/lib/sound";
 
 interface ExpenseItem {
   transactionId: string;
@@ -41,6 +45,32 @@ export function ExpenseView() {
   });
   const [successNotice, setSuccessNotice] = useState<string | null>(null);
   const [gamificationState, setGamificationState] = useState<ProductivityCycleState>(INITIAL_CYCLE_STATE);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("All");
+
+  const handleExportCsv = () => {
+    if (recentExpenses.length === 0) return;
+    const headers = "Transaction ID,Date,Description,Category,Amount,Currency,Payment Method\n";
+    const rows = recentExpenses.map(r => 
+      `"${r.transactionId}","${r.date}","${r.description.replace(/"/g, '""')}","${r.category}",${r.amount},"${r.currency}","${r.paymentMethod}"`
+    ).join("\n");
+
+    const blob = new Blob([headers + rows], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `PromptWars_Expenses_${new Date().toISOString().split("T")[0]}.csv`;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+  };
+
+  const filteredExpenses = recentExpenses.filter(item => {
+    const matchesSearch = item.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                          item.transactionId.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesCat = selectedCategory === "All" || item.category === selectedCategory;
+    return matchesSearch && matchesCat;
+  });
 
   useEffect(() => {
     setGamificationState(loadLocalGamificationState());
@@ -137,6 +167,7 @@ export function ExpenseView() {
         `Recorded ${extractedExpense.currency} ${extractedExpense.amount} for ${extractedExpense.description}`
       );
       setGamificationState(updated.state);
+      playChoreSnapSound();
       window.dispatchEvent(new Event("gamification_updated"));
 
       setSuccessNotice(`Expense verified and synchronized to Google Sheet! (+${updated.xpAwarded} XP)`);
@@ -349,10 +380,53 @@ export function ExpenseView() {
 
           {/* Recent Transactions Table */}
           <div className="bg-parchment-card border border-parchment-border rounded-2xl p-6 shadow-subtle">
-            <h3 className="text-sm font-bold text-slate-text mb-4 flex items-center justify-between">
-              <span>Google Sheets Expense Ledger</span>
-              <span className="text-xs font-mono text-slate-muted">{recentExpenses.length} Records</span>
-            </h3>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3 mb-4 border-b border-parchment-border gap-3">
+              <div>
+                <h3 className="text-sm font-bold text-slate-text flex items-center gap-2">
+                  <span>Google Sheets Expense Ledger</span>
+                  <span className="text-xs font-mono text-slate-muted">({filteredExpenses.length} Records)</span>
+                </h3>
+              </div>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={handleExportCsv}
+                  className="flex items-center gap-1.5 text-xs font-semibold text-cobalt bg-white border border-cobalt/30 hover:bg-cobalt-light px-3 py-1.5 rounded-lg shadow-sm"
+                >
+                  <Download className="w-3.5 h-3.5" />
+                  <span>Export CSV</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Search & Filter Toolbar */}
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 mb-4 text-xs">
+              <div className="relative flex-1">
+                <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-2.5" />
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Search description or TXN ID..."
+                  className="w-full bg-white border border-parchment-border rounded-lg pl-8 pr-3 py-1.5 text-slate-text outline-none focus:border-cobalt"
+                />
+              </div>
+              <div className="flex items-center gap-1 overflow-x-auto pb-1 sm:pb-0">
+                {["All", "Food & Dining", "Utilities", "Software & Utilities"].map((cat) => (
+                  <button
+                    key={cat}
+                    onClick={() => setSelectedCategory(cat)}
+                    className={`px-2.5 py-1 rounded-md text-[11px] font-medium whitespace-nowrap transition-colors ${
+                      selectedCategory === cat
+                        ? "bg-cobalt text-white font-semibold"
+                        : "bg-white border border-parchment-border text-slate-text hover:bg-parchment-surface"
+                    }`}
+                  >
+                    {cat}
+                  </button>
+                ))}
+              </div>
+            </div>
 
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs">
@@ -367,7 +441,7 @@ export function ExpenseView() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-parchment-border">
-                  {recentExpenses.slice(0, 8).map((item) => (
+                  {filteredExpenses.map((item) => (
                     <tr key={item.transactionId} className="hover:bg-white/60">
                       <td className="py-2.5 font-mono text-[11px] text-slate-muted">{item.transactionId}</td>
                       <td className="py-2.5 text-slate-text">{item.date}</td>

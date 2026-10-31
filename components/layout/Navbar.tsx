@@ -4,6 +4,8 @@ import React, { useState, useEffect } from "react";
 import Link from "next/navigation";
 import { usePathname } from "next/navigation";
 import { 
+  Volume2,
+  VolumeX,
   CheckCircle2, 
   Sparkles, 
   RotateCcw, 
@@ -16,14 +18,17 @@ import {
 } from "lucide-react";
 import { loadLocalGamificationState, startNewCycle } from "@/lib/gamification/engine";
 import { ProductivityCycleState, INITIAL_CYCLE_STATE } from "@/lib/gamification/types";
+import { isAudioMuted, toggleAudioMute } from "@/lib/sound";
 
 export function Navbar() {
   const pathname = usePathname();
   const [state, setState] = useState<ProductivityCycleState>(INITIAL_CYCLE_STATE);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [muted, setMuted] = useState(false);
 
   useEffect(() => {
     setState(loadLocalGamificationState());
+    setMuted(isAudioMuted());
 
     const handleUpdate = () => {
       setState(loadLocalGamificationState());
@@ -117,6 +122,17 @@ export function Navbar() {
               />
             </div>
           </div>
+
+          <button
+            onClick={() => {
+              const next = toggleAudioMute();
+              setMuted(next);
+            }}
+            title={muted ? "Unmute Audio" : "Mute Audio"}
+            className="p-1.5 rounded-md text-slate-muted hover:text-cobalt hover:bg-parchment-border/50 transition-colors"
+          >
+            {muted ? <VolumeX className="w-4 h-4 text-red-500" /> : <Volume2 className="w-4 h-4" />}
+          </button>
 
           <button
             onClick={handleResetCycle}

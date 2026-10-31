@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { ProductivityCycleState } from "@/lib/gamification/types";
 import { recordManualPuzzleSolved, startNewCycle } from "@/lib/gamification/engine";
+import { playTileSlideSound, playVictoryFanfare } from "@/lib/sound";
 
 interface ManualPuzzleModalProps {
   isOpen: boolean;
@@ -89,6 +90,7 @@ export function ManualPuzzleModal({
     if (won) {
       setIsSolved(true);
       setIsActive(false);
+      playVictoryFanfare();
       try {
         confetti({
           particleCount: 150,
@@ -121,6 +123,7 @@ export function ManualPuzzleModal({
       newTiles[index] = 0;
       setTiles(newTiles);
       setMoves((prev) => prev + 1);
+      playTileSlideSound();
       checkVictory(newTiles);
     }
   };

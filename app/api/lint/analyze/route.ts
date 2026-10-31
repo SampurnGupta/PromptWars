@@ -80,10 +80,47 @@ export async function POST(req: NextRequest) {
           }
         }
 
-        // Rule 6: Missing semicolon (if line ends with identifier or call without semicolon or brace)
-        if (["js", "ts"].includes(ext || "")) {
-          if (/[a-zA-Z0-9_)'"]\s*$/.test(line) && !line.trim().startsWith("//") && !line.includes("{") && !line.includes("}") && line.trim().length > 3) {
-            // soft warning
+        // Rule 6: Python specific checks
+        if (ext === "py") {
+          if (/^from\s+[a-zA-Z0-9_.]+\s+import\s+\*/.test(line.trim())) {
+            issues.push({
+              filePath: f.path,
+              line: lineNum,
+              ruleId: "python-no-wildcard-import",
+              message: "Avoid wildcard imports 'from module import *'.",
+              severity: "warning",
+            });
+          }
+          if (/==\s*(None|True|False)\b/.test(line)) {
+            issues.push({
+              filePath: f.path,
+              line: lineNum,
+              ruleId: "python-comparison-to-singleton",
+              message: "Comparison to None/True/False should be 'is' or 'is not'.",
+              severity: "warning",
+            });
+          }
+          if (/^\s*print\(/.test(line)) {
+            issues.push({
+              filePath: f.path,
+              line: lineNum,
+              ruleId: "python-no-print",
+              message: "Unexpected print statement in production code.",
+              severity: "warning",
+            });
+          }
+        }
+
+        // Rule 7: JSON trailing commas
+        if (ext === "json") {
+          if (/,\s*([}\]])/.test(line)) {
+            issues.push({
+              filePath: f.path,
+              line: lineNum,
+              ruleId: "json-no-trailing-comma",
+              message: "Trailing commas are invalid in standard JSON.",
+              severity: "error",
+            });
           }
         }
       });

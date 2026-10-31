@@ -66,6 +66,20 @@ export async function POST(req: NextRequest) {
           modified = modified.replace(/:\s*any\b/g, ": unknown");
           changes.push("Replaced dangerous 'any' with type-safe 'unknown'");
         }
+        // Python == None / == True
+        if (/==\s*None\b/.test(modified)) {
+          modified = modified.replace(/==\s*None\b/g, "is None");
+          changes.push("Replaced '== None' with 'is None'");
+        }
+        if (/==\s*True\b/.test(modified)) {
+          modified = modified.replace(/==\s*True\b/g, "is True");
+          changes.push("Replaced '== True' with 'is True'");
+        }
+        // JSON trailing comma
+        if (/,\s*([}\]])/.test(modified)) {
+          modified = modified.replace(/,\s*([}\]])/g, "$1");
+          changes.push("Removed invalid JSON trailing comma");
+        }
         return modified;
       });
 

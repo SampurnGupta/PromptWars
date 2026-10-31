@@ -12,10 +12,14 @@ import {
   Send,
   Calendar,
   Clock,
-  ArrowRight
+  ArrowRight,
+  CheckSquare,
+  Square,
+  X
 } from "lucide-react";
 import { loadLocalGamificationState, recordVerticalCompletion } from "@/lib/gamification/engine";
 import { ProductivityCycleState, INITIAL_CYCLE_STATE } from "@/lib/gamification/types";
+import { playChoreSnapSound } from "@/lib/sound";
 
 interface EmailItem {
   id: string;
@@ -40,6 +44,8 @@ export function EmailView() {
   const [processedSummary, setProcessedSummary] = useState<any | null>(null);
   const [gamificationState, setGamificationState] = useState<ProductivityCycleState>(INITIAL_CYCLE_STATE);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
+  const [selectedEmailIds, setSelectedEmailIds] = useState<string[]>([]);
+  const [inspectedEmail, setInspectedEmail] = useState<EmailItem | null>(null);
 
   useEffect(() => {
     setGamificationState(loadLocalGamificationState());
@@ -53,6 +59,7 @@ export function EmailView() {
       if (res.ok) {
         const data = await res.json();
         setEmails(data.emails || []);
+        setSelectedEmailIds((data.emails || []).map((e: EmailItem) => e.id));
       }
     } catch (err) {
       console.warn("Error fetching emails:", err);
@@ -66,10 +73,11 @@ export function EmailView() {
     setStatusMessage(null);
 
     try {
+      const targetIds = selectedEmailIds.length > 0 ? selectedEmailIds : emails.map(e => e.id);
       const res = await fetch("/api/email/process", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ emailIds: emails.map(e => e.id) }),
+        body: JSON.stringify({ emailIds: targetIds }),
       });
 
       if (!res.ok) throw new Error("Processing failed");
@@ -110,6 +118,7 @@ export function EmailView() {
         `Cleaned ${data.totalAnalyzed} emails (${data.markedReadCount} read, ${data.starredCount} starred) and dispatched digest.`
       );
       setGamificationState(updated.state);
+      playChoreSnapSound();
       window.dispatchEvent(new Event("gamification_updated"));
 
       setStatusMessage(`Email cleanup successfully executed & digest dispatched! (+${updated.xpAwarded} XP)`);
@@ -257,10 +266,37 @@ export function EmailView() {
 
       {/* Email Inbox Listing */}
       <div className="bg-parchment-card border border-parchment-border rounded-2xl p-6 shadow-subtle">
-        <h3 className="text-sm font-bold text-slate-text mb-4 flex items-center justify-between">
-          <span>Target Inbox Messages</span>
-          <span className="text-xs font-mono text-slate-muted">{emails.length} Items</span>
-        </h3>
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3 mb-4 border-b border-parchment-border gap-2">
+          <h3 className="text-sm font-bold text-slate-text flex items-center gap-2">
+            <span>Target Inbox Messages</span>
+            <span className="text-xs font-mono text-slate-muted">({emails.length} Items)</span>
+          </h3>
+          <div className="flex items-center gap-2 text-xs">
+            <button
+              type="button"
+              onClick={() => {
+                if (selectedEmailIds.length === emails.length) {
+                  setSelectedEmailIds([]);
+                } else {
+                  setSelectedEmailIds(emails.map(e => e.id));
+                }
+              }}
+              className="text-cobalt font-semibold hover:underline flex items-center gap-1"
+            >
+              {selectedEmailIds.length === emails.length ? (
+                <>
+                  <CheckSquare className="w-3.5 h-3.5" />
+                  <span>Deselect All</span>
+                </>
+              ) : (
+                <>
+                  <Square className="w-3.5 h-3.5" />
+                  <span>Select All ({selectedEmailIds.length}/{emails.length})</span>
+                </>
+              )}
+            </button>
+          </div>
+        </div>
 
         {loading ? (
           <div className="py-12 flex flex-col items-center justify-center text-slate-muted text-xs">
@@ -270,6 +306,7 @@ export function EmailView() {
         ) : (
           <div className="space-y-3">
             {emails.map((email) => {
+              const isSelected = selectedEmailIds.includes(email.id);
               const isStarred = email.isStarred || email.classification === "important";
               const isRead = email.isRead || email.classification === "unnecessary";
 
@@ -285,13 +322,30 @@ export function EmailView() {
                   }`}
                 >
                   <div className="flex items-start justify-between gap-3">
-                    <div className="flex items-start gap-2.5">
-                      {isStarred ? (
-                        <Star className="w-4 h-4 text-amber-500 fill-amber-500 flex-shrink-0 mt-0.5" />
-                      ) : (
-                        <Mail className="w-4 h-4 text-slate-muted flex-shrink-0 mt-0.5" />
-                      )}
-                      <div>
+                    <div className="flex items-start gap-3 flex-1">
+                      {/* Checkbox */}
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (isSelected) {
+                            setSelectedEmailIds(prev => prev.filter(id => id !== email.id));
+                          } else {
+                            setSelectedEmailIds(prev => [...prev, email.id]);
+                          }
+                        }}
+                        className="mt-0.5 text-slate-400 hover:text-cobalt"
+                      >
+                        {isSelected ? (
+                          <CheckSquare className="w-4 h-4 text-cobalt" />
+                        ) : (
+                          <Square className="w-4 h-4" />
+                        )}
+                      </button>
+
+                      <div 
+                        onClick={() => setInspectedEmail(email)}
+                        className="cursor-pointer flex-1"
+                      >
                         <div className="flex items-center gap-2">
                           <span className="font-bold text-xs text-slate-text">{email.sender}</span>
                           {email.classification && (
@@ -308,7 +362,9 @@ export function EmailView() {
                             </span>
                           )}
                         </div>
-                        <h4 className="text-sm font-bold text-slate-text mt-0.5">{email.subject}</h4>
+                        <h4 className="text-sm font-bold text-slate-text mt-0.5 hover:text-cobalt transition-colors">
+                          {email.subject}
+                        </h4>
                         <p className="text-xs text-slate-muted line-clamp-2 mt-1">{email.snippet}</p>
 
                         {email.actionRequired && (
@@ -321,9 +377,14 @@ export function EmailView() {
                       </div>
                     </div>
 
-                    <span className="text-[11px] font-mono text-slate-muted whitespace-nowrap">
-                      {email.date ? new Date(email.date).toLocaleDateString() : "Recent"}
-                    </span>
+                    <div className="flex flex-col items-end gap-1 flex-shrink-0">
+                      <span className="text-[11px] font-mono text-slate-muted whitespace-nowrap">
+                        {email.date ? new Date(email.date).toLocaleDateString() : "Recent"}
+                      </span>
+                      {isStarred && (
+                        <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
+                      )}
+                    </div>
                   </div>
                 </div>
               );
@@ -331,6 +392,67 @@ export function EmailView() {
           </div>
         )}
       </div>
+
+      {/* Email Detail Inspector Modal */}
+      {inspectedEmail && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white border border-parchment-border rounded-2xl w-full max-w-lg shadow-floating overflow-hidden animate-fade-in">
+            <div className="px-6 py-4 border-b border-parchment-border flex items-center justify-between bg-parchment-surface">
+              <div className="flex items-center gap-2">
+                <Mail className="w-4 h-4 text-cobalt" />
+                <h3 className="text-sm font-bold text-slate-text">Email Inspection</h3>
+              </div>
+              <button
+                onClick={() => setInspectedEmail(null)}
+                className="p-1 rounded-md text-slate-muted hover:text-slate-text hover:bg-parchment-border/50"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <div className="p-6 space-y-4 text-xs">
+              <div>
+                <span className="text-slate-muted block text-[10px] font-mono uppercase">Subject</span>
+                <h4 className="text-sm font-bold text-slate-text mt-0.5">{inspectedEmail.subject}</h4>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3 bg-parchment-surface p-3 rounded-xl border border-parchment-border">
+                <div>
+                  <span className="text-slate-muted block text-[10px]">From</span>
+                  <span className="font-semibold text-slate-text">{inspectedEmail.sender}</span>
+                </div>
+                <div>
+                  <span className="text-slate-muted block text-[10px]">Date</span>
+                  <span className="font-semibold text-slate-text">{new Date(inspectedEmail.date).toLocaleString()}</span>
+                </div>
+              </div>
+
+              <div>
+                <span className="text-slate-muted block text-[10px] font-mono uppercase mb-1">Snippet / Body</span>
+                <p className="text-slate-text bg-parchment-surface p-3 rounded-xl border border-parchment-border leading-relaxed">
+                  {inspectedEmail.snippet}
+                </p>
+              </div>
+
+              {inspectedEmail.reason && (
+                <div className="p-3 rounded-xl bg-blue-50 border border-blue-200">
+                  <span className="text-blue-900 font-bold block mb-0.5">AI Classification Rationale:</span>
+                  <span className="text-blue-800">{inspectedEmail.reason}</span>
+                </div>
+              )}
+            </div>
+
+            <div className="px-6 py-3 bg-parchment-surface border-t border-parchment-border flex justify-end">
+              <button
+                onClick={() => setInspectedEmail(null)}
+                className="bg-cobalt text-white text-xs px-4 py-2 rounded-lg font-bold hover:bg-cobalt-hover"
+              >
+                Close Inspector
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

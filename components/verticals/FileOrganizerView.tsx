@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { loadLocalGamificationState, recordVerticalCompletion } from "@/lib/gamification/engine";
 import { ProductivityCycleState, INITIAL_CYCLE_STATE } from "@/lib/gamification/types";
+import { playChoreSnapSound } from "@/lib/sound";
 
 interface ActionItem {
   originalPath: string;
@@ -151,6 +152,7 @@ export function FileOrganizerView() {
         `Reorganized ${plannedActions.length} files into structured folders (${duplicates.length} duplicate copies flagged).`
       );
       setGamificationState(updated.state);
+      playChoreSnapSound();
       window.dispatchEvent(new Event("gamification_updated"));
 
       setExecuting(false);
@@ -201,6 +203,7 @@ export function FileOrganizerView() {
         `Organized ZIP archive '${zipFile.name}' and downloaded reorganized structure.`
       );
       setGamificationState(updated.state);
+      playChoreSnapSound();
       window.dispatchEvent(new Event("gamification_updated"));
 
       setStatusMessage(`ZIP reorganized and downloaded successfully! (+${updated.xpAwarded} XP)`);
