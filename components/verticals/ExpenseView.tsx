@@ -16,11 +16,14 @@ import {
   ArrowRight,
   Search,
   Filter,
-  Download
+  Download,
+  Bot,
+  MessageSquare
 } from "lucide-react";
 import { loadLocalGamificationState, recordVerticalCompletion } from "@/lib/gamification/engine";
 import { ProductivityCycleState, INITIAL_CYCLE_STATE } from "@/lib/gamification/types";
 import { playChoreSnapSound } from "@/lib/sound";
+import { ExpenseChatbot } from "@/components/expenses/ExpenseChatbot";
 
 interface ExpenseItem {
   transactionId: string;
@@ -47,6 +50,29 @@ export function ExpenseView() {
   const [gamificationState, setGamificationState] = useState<ProductivityCycleState>(INITIAL_CYCLE_STATE);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
+  const [chatbotOpen, setChatbotOpen] = useState(false);
+
+  const handleChatbotRecordsUpdated = (updated: ExpenseItem[]) => {
+    setRecentExpenses(updated);
+    const total = updated.reduce((s, r) => s + (Number(r.amount) || 0), 0);
+    const cats: Record<string, number> = {};
+    for (const r of updated) {
+      cats[r.category] = (cats[r.category] || 0) + (Number(r.amount) || 0);
+    }
+    setAnalytics({ totalAmount: total, categories: cats });
+
+    const current = loadLocalGamificationState();
+    if (!current.completedVerticals.includes("expense_tracking")) {
+      const recorded = recordVerticalCompletion(
+        current,
+        "expense_tracking",
+        `AI Copilot updated Google Sheet with ${updated.length} transactions`
+      );
+      setGamificationState(recorded.state);
+      playChoreSnapSound();
+      window.dispatchEvent(new Event("gamification_updated"));
+    }
+  };
 
   const handleExportCsv = () => {
     if (recentExpenses.length === 0) return;
@@ -207,13 +233,24 @@ export function ExpenseView() {
           </p>
         </div>
 
-        <a
-          href="/"
-          className="text-xs font-semibold text-cobalt hover:underline flex items-center gap-1 self-start"
-        >
-          <span>Return to Homepage Puzzle</span>
-          <ArrowRight className="w-3.5 h-3.5" />
-        </a>
+        <div className="flex items-center gap-3 self-start">
+          <button
+            onClick={() => setChatbotOpen(true)}
+            className="inline-flex items-center gap-2 bg-cobalt text-white px-3.5 py-2 rounded-xl text-xs font-bold shadow-sm hover:bg-cobalt-hover hover:scale-[1.02] transition-all"
+          >
+            <Bot className="w-4 h-4" />
+            <span>Sheet AI Copilot</span>
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+          </button>
+
+          <a
+            href="/"
+            className="text-xs font-semibold text-cobalt hover:underline flex items-center gap-1"
+          >
+            <span>Return to Homepage Puzzle</span>
+            <ArrowRight className="w-3.5 h-3.5" />
+          </a>
+        </div>
       </div>
 
       {successNotice && (
@@ -511,6 +548,23 @@ export function ExpenseView() {
           </div>
         </div>
       </div>
+
+      {/* Floating Copilot Launcher Button */}
+      <button
+        onClick={() => setChatbotOpen(true)}
+        className="fixed bottom-6 right-6 z-40 bg-cobalt text-white px-4 py-3 rounded-full shadow-floating hover:bg-cobalt-hover hover:scale-105 transition-all flex items-center gap-2 text-xs font-bold border border-white/20"
+      >
+        <Bot className="w-4 h-4" />
+        <span>Ask Sheet Copilot</span>
+        <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+      </button>
+
+      {/* Financial AI Copilot Drawer */}
+      <ExpenseChatbot
+        isOpen={chatbotOpen}
+        onClose={() => setChatbotOpen(false)}
+        onRecordsUpdated={handleChatbotRecordsUpdated}
+      />
     </div>
   );
 }

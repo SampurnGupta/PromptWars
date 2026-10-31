@@ -99,3 +99,12 @@
 - [x] **TASK-13.4** [P1] Dynamic random internet photography selected on every page load (`lib/gamification/artwork.ts`).
 - [x] **TASK-13.5** [P1] Scattered interactive puzzle canvas with rotational & translational tilts, hover un-tilt, and live re-roll control.
 - [x] **TASK-13.6** [P1] Declutter hero and footer: remove redundant badges and deployment credit lines, rename "Real-World Actions Execution Log" to "Execution log".
+
+---
+
+## Phase 14: Google Sheets Financial AI Copilot, Real Credentials & Setup Guide
+- [x] **TASK-14.1** [P0] Google Sheets CRUD Operations: Added `updateExpenseInSheet` and `deleteExpenseFromSheet` in `lib/integrations/sheets.ts`.
+- [x] **TASK-14.2** [P0] Financial AI Copilot API: Implemented `/api/expenses/chat` with intelligent tool-calling for querying, adding, updating, and deleting Google Sheet rows.
+- [x] **TASK-14.3** [P0] Chatbot UI: Built `components/expenses/ExpenseChatbot.tsx` with live sync status, suggested chips, and real-time ledger updates.
+- [x] **TASK-14.4** [P0] LLM-Powered Code Lint Repair: Enhanced `app/api/lint/fix/route.ts` with Gemini/Groq semantic refactoring support alongside deterministic AST rules.
+- [x] **TASK-14.5** [P0] Credentials & Setup Guide: Created `SETUP_GUIDE.md` and `.env.local` template with step-by-step walkthrough for obtaining Gemini keys, Google Sheets ID, Service Account JSON, and Gmail tracking.

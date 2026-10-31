@@ -111,16 +111,18 @@ export async function fetchExpenseRecords(): Promise<ExpenseRecord[]> {
         range: "Expenses!A2:H",
       });
       const rows = res.data.values || [];
-      const remoteExpenses: ExpenseRecord[] = rows.map((r, idx) => ({
-        transactionId: r[0] || `TXN-REMOTE-${idx}`,
-        date: r[1] || new Date().toISOString().split("T")[0],
-        description: r[2] || "Expense",
-        category: r[3] || "General",
-        amount: parseFloat(r[4]) || 0,
-        currency: r[5] || "INR",
-        paymentMethod: r[6] || "Unknown",
-        createdAt: r[7] || new Date().toISOString(),
-      }));
+      const remoteExpenses: ExpenseRecord[] = rows
+        .filter((r) => r && r[0] && r[0].toString().trim() !== "")
+        .map((r, idx) => ({
+          transactionId: r[0] || `TXN-REMOTE-${idx}`,
+          date: r[1] || new Date().toISOString().split("T")[0],
+          description: r[2] || "Expense",
+          category: r[3] || "General",
+          amount: parseFloat(r[4]) || 0,
+          currency: r[5] || "INR",
+          paymentMethod: r[6] || "Unknown",
+          createdAt: r[7] || new Date().toISOString(),
+        }));
       return [...remoteExpenses.reverse(), ...inMemoryDemoExpenses];
     } catch (err) {
       console.warn("Could not read live Google Sheet, returning stored expenses:", err);
@@ -128,5 +130,120 @@ export async function fetchExpenseRecords(): Promise<ExpenseRecord[]> {
   }
 
   return [...inMemoryDemoExpenses];
+}
+
+export async function updateExpenseInSheet(
+  transactionId: string,
+  updates: Partial<Omit<ExpenseRecord, "transactionId">>
+): Promise<{ success: boolean; record?: ExpenseRecord; error?: string }> {
+  const sheets = getGoogleSheetsClient();
+  const spreadsheetId = process.env.GOOGLE_SHEET_ID;
+
+  if (sheets && spreadsheetId) {
+    try {
+      const getRes = await sheets.spreadsheets.values.get({
+        spreadsheetId,
+        range: "Expenses!A2:H",
+      });
+      const rows = getRes.data.values || [];
+      const rowIndex = rows.findIndex((r) => r[0] === transactionId);
+
+      if (rowIndex !== -1) {
+        const actualRow = rowIndex + 2;
+        const existing = rows[rowIndex];
+        const updatedRecord: ExpenseRecord = {
+          transactionId,
+          date: updates.date ?? (existing[1] || new Date().toISOString().split("T")[0]),
+          description: updates.description ?? (existing[2] || "Expense"),
+          category: updates.category ?? (existing[3] || "General"),
+          amount: updates.amount !== undefined ? updates.amount : (parseFloat(existing[4]) || 0),
+          currency: updates.currency ?? (existing[5] || "INR"),
+          paymentMethod: updates.paymentMethod ?? (existing[6] || "Unknown"),
+          createdAt: existing[7] || new Date().toISOString(),
+        };
+
+        await sheets.spreadsheets.values.update({
+          spreadsheetId,
+          range: `Expenses!A${actualRow}:H${actualRow}`,
+          valueInputOption: "USER_ENTERED",
+          requestBody: {
+            values: [[
+              updatedRecord.transactionId,
+              updatedRecord.date,
+              updatedRecord.description,
+              updatedRecord.category,
+              updatedRecord.amount,
+              updatedRecord.currency,
+              updatedRecord.paymentMethod,
+              updatedRecord.createdAt,
+            ]],
+          },
+        });
+
+        const memIdx = inMemoryDemoExpenses.findIndex(e => e.transactionId === transactionId);
+        if (memIdx !== -1) inMemoryDemoExpenses[memIdx] = updatedRecord;
+
+        return { success: true, record: updatedRecord };
+      }
+    } catch (err) {
+      console.warn("Error updating Google Sheet row:", err);
+    }
+  }
+
+  // In-memory update
+  const memIdx = inMemoryDemoExpenses.findIndex(e => e.transactionId === transactionId);
+  if (memIdx !== -1) {
+    const existing = inMemoryDemoExpenses[memIdx];
+    const updatedRecord: ExpenseRecord = {
+      ...existing,
+      ...updates,
+      transactionId,
+    };
+    inMemoryDemoExpenses[memIdx] = updatedRecord;
+    return { success: true, record: updatedRecord };
+  }
+
+  return { success: false, error: `Transaction ${transactionId} not found` };
+}
+
+export async function deleteExpenseFromSheet(
+  transactionId: string
+): Promise<{ success: boolean; deletedId?: string; error?: string }> {
+  const sheets = getGoogleSheetsClient();
+  const spreadsheetId = process.env.GOOGLE_SHEET_ID;
+
+  if (sheets && spreadsheetId) {
+    try {
+      const getRes = await sheets.spreadsheets.values.get({
+        spreadsheetId,
+        range: "Expenses!A2:H",
+      });
+      const rows = getRes.data.values || [];
+      const rowIndex = rows.findIndex((r) => r[0] === transactionId);
+
+      if (rowIndex !== -1) {
+        const actualRow = rowIndex + 2;
+        await sheets.spreadsheets.values.clear({
+          spreadsheetId,
+          range: `Expenses!A${actualRow}:H${actualRow}`,
+        });
+
+        const memIdx = inMemoryDemoExpenses.findIndex(e => e.transactionId === transactionId);
+        if (memIdx !== -1) inMemoryDemoExpenses.splice(memIdx, 1);
+
+        return { success: true, deletedId: transactionId };
+      }
+    } catch (err) {
+      console.warn("Error clearing Google Sheet row:", err);
+    }
+  }
+
+  const memIdx = inMemoryDemoExpenses.findIndex(e => e.transactionId === transactionId);
+  if (memIdx !== -1) {
+    inMemoryDemoExpenses.splice(memIdx, 1);
+    return { success: true, deletedId: transactionId };
+  }
+
+  return { success: false, error: `Transaction ${transactionId} not found` };
 }
 

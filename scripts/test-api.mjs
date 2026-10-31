@@ -163,6 +163,36 @@ async function runTests() {
     assert(false, `Gamification state failed: ${err.message}`);
   }
 
+  // 8. Financial AI Chatbot & Google Sheet Copilot
+  console.log(`\n[Test 8] Financial AI Copilot & Google Sheet Chatbot (/api/expenses/chat)`);
+  try {
+    // 8a. Ask question about spending
+    const chatQueryRes = await fetch(`${BASE_URL}/api/expenses/chat`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message: "What is my category breakdown?" }),
+    });
+    assert(chatQueryRes.status === 200, "Chatbot query status is 200 OK");
+    const queryJson = await chatQueryRes.json();
+    assert(queryJson.success === true, "Chatbot query returned success true");
+    assert(typeof queryJson.answer === "string" && queryJson.answer.length > 10, "Chatbot returned descriptive answer");
+
+    // 8b. Add expense via chatbot
+    const chatAddRes = await fetch(`${BASE_URL}/api/expenses/chat`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message: "Add ₹350 for team snacks on UPI" }),
+    });
+    assert(chatAddRes.status === 200, "Chatbot add command status is 200 OK");
+    const addJson = await chatAddRes.json();
+    assert(addJson.success === true, "Chatbot add command returned success true");
+    assert(Boolean(addJson.actionTaken), "Action was executed on Google Sheet");
+    assert(addJson.actionTaken?.type === "ADD", "Action type is ADD");
+    assert(Array.isArray(addJson.updatedRecords), "Updated records returned after execution");
+  } catch (err) {
+    assert(false, `Chatbot test failed: ${err.message}`);
+  }
+
   console.log(`\n======================================================`);
   console.log(` Test Summary: ${passedCount} Passed, ${failedCount} Failed`);
   console.log(`======================================================\n`);

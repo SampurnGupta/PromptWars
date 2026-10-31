@@ -84,13 +84,36 @@ export async function POST(req: NextRequest) {
       });
 
       const heuristicFixed = fixedLines.join("\n");
+      let finalFixedContent = heuristicFixed;
+      let finalDiff = Array.from(new Set(changes));
+
+      // If an LLM API key is configured, utilize AI for semantic code repair
+      if ((process.env.GEMINI_API_KEY && process.env.GEMINI_API_KEY.length > 5) || 
+          (process.env.GROQ_API_KEY && process.env.GROQ_API_KEY.length > 5)) {
+        try {
+          const aiFix = await generateStructuredAI<{ fixedContent: string; changes: string[] }>(
+            "You are an expert code linter and compiler engineer. Fix all reported lint errors in the code. Maintain existing comments, formatting, and semantics. Do not fabricate new features.",
+            `FILE: ${file.path}\nISSUES: ${JSON.stringify(fileIssues)}\n\nSOURCE CODE:\n${file.content}`,
+            '{"fixedContent": "full corrected code text", "changes": ["list of fixes applied"]}',
+            () => ({ fixedContent: heuristicFixed, changes: finalDiff })
+          );
+          if (aiFix.data?.fixedContent) {
+            finalFixedContent = aiFix.data.fixedContent;
+            if (Array.isArray(aiFix.data.changes) && aiFix.data.changes.length > 0) {
+              finalDiff = Array.from(new Set([...finalDiff, ...aiFix.data.changes]));
+            }
+          }
+        } catch (err) {
+          console.warn("AI lint fix fallback to heuristic:", err);
+        }
+      }
 
       results.push({
         filePath: file.path,
         originalContent: file.content,
-        fixedContent: heuristicFixed,
-        diffSummary: Array.from(new Set(changes)),
-        resolvedIssuesCount: changes.length > 0 ? changes.length : fileIssues.length,
+        fixedContent: finalFixedContent,
+        diffSummary: finalDiff,
+        resolvedIssuesCount: finalDiff.length > 0 ? finalDiff.length : fileIssues.length,
       });
     }
 
