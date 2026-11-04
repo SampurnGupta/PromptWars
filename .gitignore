@@ -38,3 +38,5 @@ next-env.d.ts
 promptwars-*.json
 service-account*.json
 *.key.json
+keys.txt
+*.keys.txt
